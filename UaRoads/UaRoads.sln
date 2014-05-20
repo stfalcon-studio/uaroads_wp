@@ -1,8 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-VisualStudioVersion = 12.0.30501.0
-MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UaRoadsWP", "UaRoadsWP\UaRoadsWP.csproj", "{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UaRoadsWpApi", "UaRoadsWpApi\UaRoadsWpApi.csproj", "{D0285493-1DD0-4634-A4A9-335176DDBFE7}"
