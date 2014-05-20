@@ -1,14 +1,12 @@
-﻿using System;
-using System.Windows.Navigation;
+﻿using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
-using UaRoadsWpApi;
 
 namespace UaRoadsWP.Pages
 {
-    public partial class MainPage : PhoneApplicationPage
+    public partial class LoginPage : PhoneApplicationPage
     {
         // Constructor
-        public MainPage()
+        public LoginPage()
         {
             InitializeComponent();
 
@@ -19,8 +17,6 @@ namespace UaRoadsWP.Pages
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            var res = await new ApiClient().Login("test@test.com", Environment.OSVersion.Platform.ToString(), Microsoft.Phone.Info.DeviceStatus.DeviceName, Environment.OSVersion.Version.ToString(), Windows.Phone.System.Analytics.HostInformation.PublisherHostId);
-
         }
 
         // Sample code for building a localized ApplicationBar
