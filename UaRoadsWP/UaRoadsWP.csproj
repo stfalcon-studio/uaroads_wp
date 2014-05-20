@@ -123,6 +123,8 @@
     <Compile Include="Services\StateService.cs" />
     <Compile Include="Base\SQLite\SQLite.cs" />
     <Compile Include="Base\SQLite\SQLiteAsync.cs" />
+    <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelLocator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
