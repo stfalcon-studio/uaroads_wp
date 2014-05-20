@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 
 namespace UaRoadsWP.Models
 {
-    public class DbRoad
-    {
-
-    }
-
     public class DbRoadBody
     {
 
