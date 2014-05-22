@@ -10,6 +10,7 @@
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             SupportedOrientations="Portrait"
+                            DataContext="{Binding Source={StaticResource Locator}, Path=SettingsPageViewModel}"
                             Orientation="Portrait"
                             shell:SystemTray.IsVisible="True">
 

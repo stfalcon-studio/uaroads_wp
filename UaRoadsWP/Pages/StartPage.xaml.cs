@@ -1,4 +1,5 @@
-﻿using System.Windows.Navigation;
+﻿using System;
+using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 
 namespace UaRoadsWP.Pages
@@ -17,6 +18,8 @@ namespace UaRoadsWP.Pages
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            this.NavigationService.Navigate(new Uri("/Pages/LoginPage.xaml", UriKind.Relative));
         }
 
         // Sample code for building a localized ApplicationBar

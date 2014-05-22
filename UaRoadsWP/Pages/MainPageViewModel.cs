@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using UaRoadsWP.Models;
 
 namespace UaRoadsWP.Pages
 {
-    public class MainPageViewModel
+    public class MainPageViewModel : UaRoadsViewModel
     {
     }
 }
