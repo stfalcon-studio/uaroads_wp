@@ -2,6 +2,7 @@
   <!--Application Resources-->
   <Application.Resources>
     <local:LocalizedStrings xmlns:local="clr-namespace:UaRoadsWP" x:Key="LocalizedStrings" />
+    <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:UaRoadsWP.ViewModel" />
   </Application.Resources>
   <Application.ApplicationLifetimeObjects>
     <!--Required object that handles lifetime events for the application-->
