@@ -19,7 +19,8 @@ namespace UaRoadsWP.Pages
         {
             base.OnNavigatedTo(e);
 
-            this.NavigationService.Navigate(new Uri("/Pages/LoginPage.xaml", UriKind.Relative));
+            this.NavigationService.Navigate(new Uri("/Pages/MainPage.xaml", UriKind.Relative));
+            //this.NavigationService.Navigate(new Uri("/Pages/LoginPage.xaml", UriKind.Relative));
         }
 
         // Sample code for building a localized ApplicationBar

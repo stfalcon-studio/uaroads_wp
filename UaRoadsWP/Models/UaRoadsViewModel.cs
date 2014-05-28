@@ -1,6 +1,8 @@
-﻿namespace UaRoadsWP.Models
+﻿using GalaSoft.MvvmLight;
+
+namespace UaRoadsWP.Models
 {
-    public class UaRoadsViewModel 
+    public class UaRoadsViewModel :ViewModelBase
     {
     }
 }

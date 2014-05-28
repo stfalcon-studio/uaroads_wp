@@ -16,6 +16,12 @@ namespace UaRoadsWP.Services
             set { GetService().SetSetting("LastUserLogin", value); }
         }
 
+        public static Guid LastRecordedRoad
+        {
+            get { return GetService().GetSetting("LastRecordedRoad", Guid.Empty); }
+            set { GetService().SetSetting("LastRecordedRoad", value); }
+        }
+
         public static ApplicationSettingsService GetService()
         {
             return new ApplicationSettingsService();
