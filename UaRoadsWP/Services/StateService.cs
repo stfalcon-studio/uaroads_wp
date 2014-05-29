@@ -6,6 +6,6 @@ namespace UaRoadsWP.Services
 {
     public static class StateService
     {
-
+        
     }
 }

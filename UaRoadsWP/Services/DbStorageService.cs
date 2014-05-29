@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,11 @@ namespace UaRoadsWP.Services
             return await GetAsyncConnection().Table<DbTrack>().ToListAsync();
         }
 
+        public async Task<DbTrack> TracksGet(short trackId)
+        {
+            return await GetAsyncConnection().GetAsync<DbTrack>(trackId);
+        }
+
         public async Task TrackInsertUpdate(DbTrack item)
         {
             var c = GetAsyncConnection();
@@ -37,6 +43,7 @@ namespace UaRoadsWP.Services
 
         public async Task TackPitInsert(List<DbTrackPit> pits)
         {
+            Debug.WriteLine("TackPitInsert {0}", pits.Count);
             var c = GetAsyncConnection();
             await c.InsertAllAsync(pits);
         }

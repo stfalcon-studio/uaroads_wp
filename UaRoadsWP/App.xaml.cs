@@ -65,6 +65,8 @@ namespace UaRoadsWP
         {
             SimpleIoc.Default.Register<LocationService>(true);
 
+            SimpleIoc.Default.Register<AccelerometerRecordService>(true);
+
             new DbService().Initialize();
         }
 

@@ -108,6 +108,10 @@
     <Compile Include="Models\Db\DbTackLocation.cs" />
     <Compile Include="Models\UaRoadsViewModel.cs" />
     <Compile Include="Models\Db\DbTrack.cs" />
+    <Compile Include="Pages\TracksPage.xaml.cs">
+      <DependentUpon>TracksPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\TracksPageViewModel.cs" />
     <Compile Include="Pages\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
@@ -131,10 +135,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\AppConstant.cs" />
     <Compile Include="Services\DbStorageService.cs" />
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\LocationService.cs" />
-    <Compile Include="Services\RecordService.cs" />
+    <Compile Include="Services\AccelerometerRecordService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\StateService.cs" />
     <Compile Include="Base\SQLite.cs" />
@@ -147,6 +152,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Pages\TracksPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\StartPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

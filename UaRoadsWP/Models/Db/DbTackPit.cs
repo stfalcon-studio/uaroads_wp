@@ -1,11 +1,16 @@
-﻿namespace UaRoadsWP.Models.Db
+﻿using System;
+
+namespace UaRoadsWP.Models.Db
 {
-    public class DbTrackLocation
+    public class DbTrackPit
     {
+        [SQLite.PrimaryKey, SQLite.AutoIncrement]
+        public int Id { get; set; }
+
         public short TrackId { get; set; }
 
-        public double PitValue { get; set; }
+        public float PitValue { get; set; }
 
-        public double RecordTimeStamp { get; set; }
+        public DateTimeOffset TimeStamp { get; set; }
     }
 }

@@ -5,6 +5,7 @@
                             xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
                             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:appBar="clr-namespace:EveWP8.XAML.Controls.AppBar;assembly=EveWP8"
                             mc:Ignorable="d"
                             FontFamily="{StaticResource PhoneFontFamilyNormal}"
                             FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -60,6 +61,15 @@
                     Visibility="{Binding IsRecordStarted, Converter={StaticResource  BooleanToVisibilityConverter}}"
                     Grid.Row="2" />
         </Grid>
+
+        <appBar:BindableApplicationBar IsMenuEnabled="True"
+                                       Mode="Minimized">
+            <appBar:BindableApplicationBar.MenuItems>
+                <appBar:BindableApplicationBarMenuItem Text="tracks"
+                                                       Click="NavigateToAllTacksPageClick"
+                                                       Command="{Binding NavigateToAllTacksPageCommand}" />
+            </appBar:BindableApplicationBar.MenuItems>
+        </appBar:BindableApplicationBar>
 
     </Grid>
 

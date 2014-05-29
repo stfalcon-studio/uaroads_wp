@@ -1,6 +1,10 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Ioc;
 using UaRoadsWP.Models;
+using UaRoadsWP.Models.Db;
+using UaRoadsWP.Services;
 
 namespace UaRoadsWP.Pages
 {
@@ -13,21 +17,49 @@ namespace UaRoadsWP.Pages
 
         private void InitCommands()
         {
-            StartCommand = new RelayCommand(() =>
+            StartCommand = new RelayCommand(async () =>
             {
+                if (IsBusy) return;
+                IsBusy = true;
+                var track = new DbTrack()
+                {
+                    TrackComment = "comment " + DateTime.Now.ToString("g"),
+                    TrackStatus = ETrackStatus.Started
+                };
+
+                await new DbStorageService().TrackInsertUpdate(track);
+                SettingsService.LastRecordedRoad = track.TrackId;
+                SettingsService.CurrentTrack = track.Id;
+                SimpleIoc.Default.GetInstance<AccelerometerRecordService>().Start();
+
                 IsRecordStarted = true;
                 RaisePropertyChanged(() => IsRecordStarted);
                 UpdateState();
+                IsBusy = false;
             }, () =>
             {
                 return !IsRecordStarted;
             });
 
-            StopCommand = new RelayCommand(() =>
+            StopCommand = new RelayCommand(async () =>
             {
+                if (IsBusy) return;
+                IsBusy = true;
+
+                SimpleIoc.Default.GetInstance<AccelerometerRecordService>().Stop();
+
+                if (SettingsService.CurrentTrack.HasValue)
+                {
+                    var track = await new DbStorageService().TracksGet(SettingsService.CurrentTrack.Value);
+                    track.TrackStatus = ETrackStatus.Finished;
+                    await new DbStorageService().TrackInsertUpdate(track);
+                }
+
                 IsRecordStarted = false;
                 RaisePropertyChanged(() => IsRecordStarted);
                 UpdateState();
+
+                IsBusy = false;
             }, () =>
             {
                 return IsRecordStarted;

@@ -22,6 +22,12 @@ namespace UaRoadsWP.Services
             set { GetService().SetSetting("LastRecordedRoad", value); }
         }
 
+        public static short? CurrentTrack
+        {
+            get { return GetService().GetSetting("CurrentTrack", (short?)null); }
+            set { GetService().SetSetting("CurrentTrack", value); }
+        }
+
         public static ApplicationSettingsService GetService()
         {
             return new ApplicationSettingsService();

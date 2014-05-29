@@ -24,38 +24,27 @@ namespace UaRoadsWP.Pages
             base.OnNavigatedTo(e);
 
 
-            await new DbStorageService().TrackInsertUpdate(new DbTrack()
-            {
-                TrackComment = "comment " + DateTime.Now.ToString("g"),
-                TrackStatus = ETrackStatus.Started
-            });
+            //await new DbStorageService().TrackInsertUpdate(new DbTrack()
+            //{
+            //    TrackComment = "comment " + DateTime.Now.ToString("g"),
+            //    TrackStatus = ETrackStatus.Started
+            //});
 
-            var tracks = await new DbStorageService().TracksGet();
+            //var tracks = await new DbStorageService().TracksGet();
 
-            foreach (var dbTrack in tracks)
-            {
-                Debug.WriteLine("{0} {1} {2} {3}", dbTrack.Id, dbTrack.TrackId, dbTrack.TrackComment, dbTrack.TrackStatus);
-            }
+            //foreach (var dbTrack in tracks)
+            //{
+            //    Debug.WriteLine("{0} {1} {2} {3}", dbTrack.Id, dbTrack.TrackId, dbTrack.TrackComment, dbTrack.TrackStatus);
+            //}
 
 
             //var res = await new ApiClient().Login("test@test.com", Environment.OSVersion.Platform.ToString(), Microsoft.Phone.Info.DeviceStatus.DeviceName, Environment.OSVersion.Version.ToString(), Windows.Phone.System.Analytics.HostInformation.PublisherHostId);
 
         }
 
-        // Sample code for building a localized ApplicationBar
-        //private void BuildLocalizedApplicationBar()
-        //{
-        //    // Set the page's ApplicationBar to a new instance of ApplicationBar.
-        //    ApplicationBar = new ApplicationBar();
-
-        //    // Create a new button and set the text value to the localized string from AppResources.
-        //    ApplicationBarIconButton appBarButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/appbar.add.rest.png", UriKind.Relative));
-        //    appBarButton.Text = AppResources.AppBarButtonText;
-        //    ApplicationBar.Buttons.Add(appBarButton);
-
-        //    // Create a new menu item with the localized string from AppResources.
-        //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
-        //    ApplicationBar.MenuItems.Add(appBarMenuItem);
-        //}
+        private void NavigateToAllTacksPageClick(object sender, EventArgs e)
+        {
+            this.NavigationService.Navigate(new Uri("/Pages/TracksPage.xaml", UriKind.Relative));
+        }
     }
 }

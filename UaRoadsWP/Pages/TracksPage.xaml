@@ -1,0 +1,70 @@
+﻿<phone:PhoneApplicationPage x:Class="UaRoadsWP.Pages.TracksPage"
+                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+                            xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                            xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives"
+                            xmlns:appBar="clr-namespace:EveWP8.XAML.Controls.AppBar;assembly=EveWP8"
+                            mc:Ignorable="d"
+                            FontFamily="{StaticResource PhoneFontFamilyNormal}"
+                            FontSize="{StaticResource PhoneFontSizeNormal}"
+                            Foreground="{StaticResource PhoneForegroundBrush}"
+                            SupportedOrientations="Portrait"
+                            Orientation="Portrait"
+                            DataContext="{Binding Source={StaticResource Locator}, Path=TracksPageViewModel}"
+                            shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot"
+          Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="ContentPanel"
+              Grid.Row="1"
+              Margin="12,0,12,0">
+
+            <telerikPrimitives:RadDataBoundListBox ItemsSource="{Binding Tracks}">
+
+                <telerikPrimitives:RadDataBoundListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0 0 0 10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10*" />
+                                <ColumnDefinition Width="10" />
+                                
+                                <ColumnDefinition Width="60*" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="30*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{Binding Id}" />
+
+                            <TextBlock Text="{Binding TrackComment}"
+                                       Grid.Column="2" />
+
+                            <TextBlock Text="{Binding TrackStatus}"
+                                       Grid.Column="4" />
+                        </Grid>
+                    </DataTemplate>
+                </telerikPrimitives:RadDataBoundListBox.ItemTemplate>
+
+
+            </telerikPrimitives:RadDataBoundListBox>
+        </Grid>
+
+        <appBar:BindableApplicationBar IsMenuEnabled="True"
+                                       Mode="Minimized">
+            <appBar:BindableApplicationBar.MenuItems>
+                <appBar:BindableApplicationBarMenuItem Text="clear all"
+                                                       Click="ClearAllTracks"
+                                                     />
+            </appBar:BindableApplicationBar.MenuItems>
+        </appBar:BindableApplicationBar>
+    </Grid>
+
+</phone:PhoneApplicationPage>

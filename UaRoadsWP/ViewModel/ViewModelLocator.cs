@@ -30,7 +30,7 @@ namespace UaRoadsWP.ViewModel
             SimpleIoc.Default.Register<MainPageViewModel>();
             SimpleIoc.Default.Register<SettingsPageViewModel>();
             SimpleIoc.Default.Register<StartPageViewModel>();
-
+            SimpleIoc.Default.Register<TracksPageViewModel>();
         }
 
         public LoginPageViewModel LoginPageViewModel
@@ -61,6 +61,14 @@ namespace UaRoadsWP.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<StartPageViewModel>();
+            }
+        }
+
+        public TracksPageViewModel TracksPageViewModel
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<TracksPageViewModel>();
             }
         }
 
