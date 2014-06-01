@@ -14,6 +14,8 @@ namespace UaRoadsWP.Models.Db
         public double Longitude { get; set; }
 
         public DateTimeOffset TimeStamp { get; set; }
-    }
 
+        [SQLite.Ignore]
+        public DbTrackPit PitRef { get; set; }
+    }
 }

@@ -63,9 +63,8 @@ namespace UaRoadsWP
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            SimpleIoc.Default.Register<LocationService>(true);
-
             SimpleIoc.Default.Register<AccelerometerRecordService>(true);
+            SimpleIoc.Default.Register<LocationRecordService>(true);
 
             new DbService().Initialize();
         }

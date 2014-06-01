@@ -136,14 +136,16 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\AppConstant.cs" />
+    <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\LocationRecordService.cs" />
     <Compile Include="Services\DbStorageService.cs" />
     <Compile Include="Services\DbService.cs" />
-    <Compile Include="Services\LocationService.cs" />
     <Compile Include="Services\AccelerometerRecordService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\StateService.cs" />
     <Compile Include="Base\SQLite.cs" />
     <Compile Include="Base\SQLiteAsync.cs" />
+    <Compile Include="Services\TrackRawProcessing.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
   </ItemGroup>
@@ -236,6 +238,9 @@
     <Reference Include="Sqlite">
       <HintPath>..\packages\sqlite-net-wp8.3.8.4.3\lib\windowsphone8\Sqlite.winmd</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression">
+      <HintPath>..\packages\Microsoft.Bcl.Compression.3.9.83\lib\wp8\System.IO.Compression.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Interactivity, Version=3.9.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.4.3.31.1\lib\wp8\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -264,4 +269,14 @@
     <Error Condition="!Exists('..\packages\sqlite-net-wp8.3.8.4.3\build\windowsphone8\sqlite-net-wp8.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\sqlite-net-wp8.3.8.4.3\build\windowsphone8\sqlite-net-wp8.targets'))" />
   </Target>
   <Import Project="..\packages\sqlite-net-wp8.3.8.4.3\build\windowsphone8\sqlite-net-wp8.targets" Condition="Exists('..\packages\sqlite-net-wp8.3.8.4.3\build\windowsphone8\sqlite-net-wp8.targets')" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
+  <Import Project="..\packages\Microsoft.Bcl.Compression.3.9.83\tools\Microsoft.Bcl.Compression.targets" Condition="Exists('..\packages\Microsoft.Bcl.Compression.3.9.83\tools\Microsoft.Bcl.Compression.targets')" />
+  <Target Name="EnsureBclCompressionImported" BeforeTargets="BeforeBuild" Condition="'$(BclCompressionImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Compression.3.9.83\tools\Microsoft.Bcl.Compression.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Compression.3.9.83\tools\Microsoft.Bcl.Compression.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2002" />
+  </Target>
 </Project>

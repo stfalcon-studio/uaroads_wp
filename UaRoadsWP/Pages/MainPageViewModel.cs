@@ -32,6 +32,8 @@ namespace UaRoadsWP.Pages
                 SettingsService.CurrentTrack = track.Id;
                 SimpleIoc.Default.GetInstance<AccelerometerRecordService>().Start();
 
+                SimpleIoc.Default.GetInstance<LocationRecordService>().Start();
+
                 IsRecordStarted = true;
                 RaisePropertyChanged(() => IsRecordStarted);
                 UpdateState();
@@ -48,9 +50,11 @@ namespace UaRoadsWP.Pages
 
                 SimpleIoc.Default.GetInstance<AccelerometerRecordService>().Stop();
 
+                SimpleIoc.Default.GetInstance<LocationRecordService>().Stop();
+
                 if (SettingsService.CurrentTrack.HasValue)
                 {
-                    var track = await new DbStorageService().TracksGet(SettingsService.CurrentTrack.Value);
+                    var track = await new DbStorageService().GetTrack(SettingsService.CurrentTrack.Value);
                     track.TrackStatus = ETrackStatus.Finished;
                     await new DbStorageService().TrackInsertUpdate(track);
                 }

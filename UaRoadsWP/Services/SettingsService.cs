@@ -10,10 +10,10 @@ namespace UaRoadsWP.Services
 {
     public static class SettingsService
     {
-        public static string LastUserLogin
+        public static string UserLogin
         {
-            get { return GetService().GetSetting("LastUserLogin", String.Empty); }
-            set { GetService().SetSetting("LastUserLogin", value); }
+            get { return GetService().GetSetting("UserLogin", String.Empty); }
+            set { GetService().SetSetting("UserLogin", value); }
         }
 
         public static Guid LastRecordedRoad

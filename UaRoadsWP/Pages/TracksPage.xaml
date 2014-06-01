@@ -24,9 +24,16 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <ProgressBar IsIndeterminate="{Binding IsBusy}" />
+
         <Grid x:Name="ContentPanel"
               Grid.Row="1"
               Margin="12,0,12,0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
             <telerikPrimitives:RadDataBoundListBox ItemsSource="{Binding Tracks}">
 
@@ -36,7 +43,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="10*" />
                                 <ColumnDefinition Width="10" />
-                                
+
                                 <ColumnDefinition Width="60*" />
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="30*" />
@@ -55,14 +62,21 @@
 
 
             </telerikPrimitives:RadDataBoundListBox>
+
+
+            <Grid Grid.Row="1">
+
+                <Button Content="Process"
+                        Command="{Binding ProcessTrackCommand}" />
+
+            </Grid>
         </Grid>
 
         <appBar:BindableApplicationBar IsMenuEnabled="True"
                                        Mode="Minimized">
             <appBar:BindableApplicationBar.MenuItems>
                 <appBar:BindableApplicationBarMenuItem Text="clear all"
-                                                       Click="ClearAllTracks"
-                                                     />
+                                                       Click="ClearAllTracks" />
             </appBar:BindableApplicationBar.MenuItems>
         </appBar:BindableApplicationBar>
     </Grid>

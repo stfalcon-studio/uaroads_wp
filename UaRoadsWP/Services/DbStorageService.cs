@@ -21,9 +21,20 @@ namespace UaRoadsWP.Services
             return await GetAsyncConnection().Table<DbTrack>().ToListAsync();
         }
 
-        public async Task<DbTrack> TracksGet(short trackId)
+        public async Task<DbTrack> GetTrack(short trackId)
         {
             return await GetAsyncConnection().GetAsync<DbTrack>(trackId);
+        }
+
+
+        public async Task<List<DbTrackLocation>> GetTrackLocations(short trackId)
+        {
+            return await GetAsyncConnection().Table<DbTrackLocation>().Where(x => x.Id == trackId).ToListAsync();
+        }
+
+        public async Task<List<DbTrackPit>> GetTrackPits(short trackId)
+        {
+            return await GetAsyncConnection().Table<DbTrackPit>().Where(x => x.Id == trackId).ToListAsync();
         }
 
         public async Task TrackInsertUpdate(DbTrack item)
@@ -50,6 +61,8 @@ namespace UaRoadsWP.Services
 
         public async Task TackLocationInsert(List<DbTrackLocation> pits)
         {
+            Debug.WriteLine("TackLocationInsert {0}", pits.Count);
+
             var c = GetAsyncConnection();
 
             await c.InsertAllAsync(pits);

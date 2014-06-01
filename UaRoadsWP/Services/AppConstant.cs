@@ -10,10 +10,19 @@ namespace UaRoadsWP.Services
 
         public const int SensorCacheCount = 10;
 
+        public const int LocationCacheCount = 10;
+
 
         /// <summary>
         /// ms
         /// </summary>
         public const int SensorUpdateInterval = 500;
+
+        /// <summary>
+        /// ms
+        /// </summary>
+        public const int LocationUpdateInterval = 1000;
+
+        public const string DataFolderName = "Tracks";
     }
 }

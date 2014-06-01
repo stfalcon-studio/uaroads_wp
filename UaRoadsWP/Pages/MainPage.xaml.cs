@@ -23,6 +23,10 @@ namespace UaRoadsWP.Pages
         {
             base.OnNavigatedTo(e);
 
+            while (NavigationService.CanGoBack)
+            {
+                NavigationService.RemoveBackEntry();
+            }
 
             //await new DbStorageService().TrackInsertUpdate(new DbTrack()
             //{
@@ -30,7 +34,7 @@ namespace UaRoadsWP.Pages
             //    TrackStatus = ETrackStatus.Started
             //});
 
-            //var tracks = await new DbStorageService().TracksGet();
+            //var tracks = await new DbStorageService().GetTrack();
 
             //foreach (var dbTrack in tracks)
             //{
