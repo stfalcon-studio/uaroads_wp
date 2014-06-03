@@ -31,8 +31,7 @@ namespace UaRoadsWP.Pages
 
                     IsBusy = false;
 
-                    (Application.Current.RootVisual as Microsoft.Phone.Controls.PhoneApplicationFrame).Navigate(new Uri("/Pages/MainPage.xaml",
-                        UriKind.Relative));
+                    RootFrame.Navigate(new Uri("/Pages/MainPage.xaml", UriKind.Relative));
                 }
 
                 IsBusy = false;

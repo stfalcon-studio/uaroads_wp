@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
@@ -14,10 +16,14 @@ namespace UaRoadsWP.Pages
 
         public ICommand ProcessTrackCommand { get; set; }
 
+        public bool CanUpload { get; set; }
+
         public TracksPageViewModel()
         {
             Tracks = new ObservableCollection<DbTrack>();
 
+
+            Tracks.CollectionChanged += TracksOnCollectionChanged;
 
             ProcessTrackCommand = new RelayCommand(async () =>
             {
@@ -36,6 +42,27 @@ namespace UaRoadsWP.Pages
 
                 IsBusy = false;
             });
+        }
+
+        private void TracksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            var collection = (ObservableCollection<DbTrack>)sender;
+
+            var pre = CanUpload;
+
+            CanUpload = collection.Any(x => x.TrackStatus == ETrackStatus.Finished || x.TrackStatus == ETrackStatus.ReadyToSend);
+
+            if (pre != CanUpload)
+            {
+                RaisePropertyChanged(() => CanUpload);
+            }
+        }
+
+        public void OnLoaded()
+        {
+            Load();
+
+
         }
 
 

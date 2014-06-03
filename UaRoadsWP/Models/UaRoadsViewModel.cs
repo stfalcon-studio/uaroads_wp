@@ -1,11 +1,13 @@
-﻿using System.Windows.Input;
+﻿using System.Windows;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Phone.Controls;
 
 namespace UaRoadsWP.Models
 {
-    public class UaRoadsViewModel : ViewModelBase
+    public class UaRoadsViewModel : BaseViewModel
     {
         private bool _isBusy;
 
@@ -29,6 +31,25 @@ namespace UaRoadsWP.Models
                     //todo
                 });
             }
+        }
+    }
+
+
+    public class BaseViewModel : ViewModelBase
+    {
+        public PhoneApplicationFrame RootFrame
+        {
+            get { return (Microsoft.Phone.Controls.PhoneApplicationFrame)Application.Current.RootVisual; }
+        }
+
+        public PhoneApplicationPage RootPage
+        {
+            get { return (PhoneApplicationPage)((Microsoft.Phone.Controls.PhoneApplicationFrame)Application.Current.RootVisual).Content; }
+        }
+
+        public NavigationService NavigationService
+        {
+            get { return RootPage.NavigationService; }
         }
     }
 }

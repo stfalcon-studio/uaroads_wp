@@ -19,7 +19,7 @@ namespace UaRoadsWP.Pages
         {
             base.OnNavigatedTo(e);
 
-            (DataContext as TracksPageViewModel).Load();
+            (DataContext as TracksPageViewModel).OnLoaded();
         }
 
         private void ClearAllTracks(object sender, EventArgs e)
