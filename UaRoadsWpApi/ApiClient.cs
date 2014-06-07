@@ -1,9 +1,14 @@
-﻿#define LOG_REQ
+﻿#define SANDBOX_ENV
+#undef SANDBOX_ENV
+
+#define LOG_REQ
 //#undef LOG_REQ
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UaRoadsWpApi.Generic;
@@ -14,16 +19,23 @@ namespace UaRoadsWpApi
     {
         private HttpClient _httpClient;
         private bool _isProductionEnvironment;
-        private const string ProductionEndpoint = "http://api.uaroads.com/ ";
-        private const string SandboxEndpoint = "http://uaroads-com.dev.stfalcon.com/";
-        ///http://uaroads-com.dev.stfalcon.com
+
+        private const string EndpointFrontendBackend =
+#if SANDBOX_ENV
+            "http://backend-uaroads-com.dev.stfalcon.com/";
+#else
+ "http://uaroads.com/";
+#endif
+
+        private const string EndpointApi =
+#if SANDBOX_ENV
+            "http://uaroads-com.dev.stfalcon.com/";
+#else
+ "http://api.uaroads.com/";
+#endif
+
 
         public static Action<string> OnErrorAction;
-
-        private string BaseUrl
-        {
-            get { return _isProductionEnvironment ? ProductionEndpoint : SandboxEndpoint; }
-        }
 
         public ApiClient()
         {
@@ -36,10 +48,19 @@ namespace UaRoadsWpApi
             });
         }
 
-        async Task<T> SendRequest<T>(string url, HttpMethod httpMethod, RequestParametersContainer container = null) where T : ApiResponse, new()
+
+        private string GetUrl(EServerType endpointType)
         {
-            var message = new HttpRequestMessage(httpMethod, BaseUrl + url);
+            return endpointType == EServerType.Api ? EndpointApi : EndpointFrontendBackend;
+        }
+
+        async Task<T> SendRequest<T>(EServerType endpointType, string url, HttpMethod httpMethod, RequestParametersContainer container = null) where T : ApiResponse, new()
+        {
+            var message = new HttpRequestMessage(httpMethod, Path.Combine(GetUrl(endpointType), url));
+
             message.Content = ConvertToHttpContent(container);
+
+            message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
             try
             {
@@ -52,15 +73,57 @@ namespace UaRoadsWpApi
                     var enc = new System.Text.UTF8Encoding();
                     str = enc.GetString(buf, 0, buf.Length);
                 }
+
                 Debug.WriteLine("REQUEST:\t{0}\r\n{1}\r\n", message.RequestUri.ToString(), str);
 #endif
 #endif
 
                 var response = await _httpClient.SendAsync(message);
+
                 var s = await response.Content.ReadAsStringAsync();
 
-                if (String.IsNullOrEmpty(s))
+
+#if DEBUG
+#if LOG_REQ
+                Debug.WriteLine("RESPONSE:\r\n{0}\r\n", s);
+#endif
+#endif
+
+
+                if (String.IsNullOrEmpty(s) & response.StatusCode != HttpStatusCode.OK)
                 {
+                    return new T()
+                    {
+                        success = false,
+                        message = ApiResponseProcessor.GetErrorMessage(ErrorCodes.NETWORK_ERROR)
+                    };
+                }
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    return new T()
+                    {
+                        success = false,
+                        message = s
+                    };
+                }
+
+#if LOG_REQ
+                Debug.WriteLine("RESPONSE:\r\n{0}\r\n", s);
+#endif
+
+                try
+                {
+                    return JsonConvert.DeserializeObject<T>(s);
+                }
+                catch (Exception)
+                {
+                    if (response.StatusCode == HttpStatusCode.OK)
+                        return new T()
+                        {
+                            success = true
+                        };
+
                     return new T()
                     {
                         message = ApiResponseProcessor.GetErrorMessage(ErrorCodes.NETWORK_ERROR)
@@ -68,20 +131,12 @@ namespace UaRoadsWpApi
                 }
 
 
-#if LOG_REQ
-                Debug.WriteLine("RESPONSE:\r\n{0}\r\n", s);
-#endif
-
-
-
-                return JsonConvert.DeserializeObject<T>(s);
             }
             catch (Exception ex)
             {
 #if LOG_REQ
                 Debug.WriteLine("ERROR:\r\n{0}\r\n", ex.Message);
 #endif
-
                 return new T()
                 {
                     message = ApiResponseProcessor.GetErrorMessage(ErrorCodes.NETWORK_ERROR)
@@ -96,9 +151,15 @@ namespace UaRoadsWpApi
         HttpContent ConvertToHttpContent(RequestParametersContainer container)
         {
             if (container == null) return null;
+
             return new FormUrlEncodedContent(container);
         }
+    }
 
+
+    internal enum EServerType
+    {
+        Backend, Api
     }
 
     public class ErrorCodes

@@ -66,7 +66,6 @@
                                        Mode="Minimized">
             <appBar:BindableApplicationBar.MenuItems>
                 <appBar:BindableApplicationBarMenuItem Text="tracks"
-                                                       Click="NavigateToAllTacksPageClick"
                                                        Command="{Binding NavigateToAllTacksPageCommand}" />
             </appBar:BindableApplicationBar.MenuItems>
         </appBar:BindableApplicationBar>

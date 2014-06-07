@@ -4,6 +4,8 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using UaRoadsWP.Models;
 using UaRoadsWP.Services;
+using UaRoadsWpApi;
+
 
 namespace UaRoadsWP.Pages
 {
@@ -13,29 +15,44 @@ namespace UaRoadsWP.Pages
 
         public ICommand OkCommand { get; set; }
 
+        public ICommand SkipLoginCommand { get; set; }
 
         public LoginPageViewModel()
         {
-            OkCommand = new RelayCommand(() =>
+            OkCommand = new RelayCommand(async () =>
             {
                 if (IsBusy) return;
                 IsBusy = true;
 
                 if (!CheckEmail(UserEmail))
                 {
-                    MessageBox.Show("Check your message box and try again");
+                    MessageBox.Show("Check your email and try again");
                 }
                 else
                 {
-                    SettingsService.UserLogin = UserEmail;
+                    var res = await RegisterDevice(UserEmail);
 
                     IsBusy = false;
 
-                    RootFrame.Navigate(new Uri("/Pages/MainPage.xaml", UriKind.Relative));
+                    if (ApiResponseProcessor.Process(res))
+                    {
+                        SettingsService.UserLogin = UserEmail;
+
+                        RootFrame.Navigate(new Uri("/Pages/MainPage.xaml", UriKind.Relative));
+                    }
                 }
 
                 IsBusy = false;
             });
+
+
+            SkipLoginCommand = new RelayCommand(SkipLoginExecute);
+        }
+
+        private void SkipLoginExecute()
+        {
+            SettingsService.DelayLogin = true;
+            RootFrame.Navigate(new Uri("/Pages/MainPage.xaml", UriKind.Relative));
         }
 
 

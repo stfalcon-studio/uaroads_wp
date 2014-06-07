@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
+using UaRoadsWP.Models;
 using UaRoadsWP.Services;
 
 namespace UaRoadsWP.Pages
@@ -19,15 +20,15 @@ namespace UaRoadsWP.Pages
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            if (String.IsNullOrEmpty(SettingsService.UserLogin))
-            {
-                this.NavigationService.Navigate(new Uri("/Pages/LoginPage.xaml", UriKind.Relative));
-            }
-            else
-            {
-                this.NavigationService.Navigate(new Uri("/Pages/MainPage.xaml", UriKind.Relative));
-            }
+            ((BaseViewModel)DataContext).OnNavigatedTo(e);
         }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            ((BaseViewModel)DataContext).OnNavigatedFrom(e);
+        }
+
+      
     }
 }

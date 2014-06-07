@@ -5,5 +5,7 @@ namespace UaRoadsWP.Pages
 {
     public class SettingsPageViewModel : UaRoadsViewModel
     {
+
+
     }
 }

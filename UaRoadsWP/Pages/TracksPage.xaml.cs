@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
+using UaRoadsWP.Models;
 
 namespace UaRoadsWP.Pages
 {
@@ -18,8 +19,13 @@ namespace UaRoadsWP.Pages
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            ((BaseViewModel)DataContext).OnNavigatedTo(e);
+        }
 
-            (DataContext as TracksPageViewModel).OnLoaded();
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            ((BaseViewModel)DataContext).OnNavigatedFrom(e);
         }
 
         private void ClearAllTracks(object sender, EventArgs e)

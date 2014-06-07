@@ -16,6 +16,12 @@ namespace UaRoadsWP.Services
             set { GetService().SetSetting("UserLogin", value); }
         }
 
+        public static bool DelayLogin
+        {
+            get { return GetService().GetSetting("DelayLogin", false); }
+            set { GetService().SetSetting("DelayLogin", value); }
+        }
+
         public static Guid LastRecordedRoad
         {
             get { return GetService().GetSetting("LastRecordedRoad", Guid.Empty); }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using UaRoadsWP.Models;
@@ -74,6 +75,14 @@ namespace UaRoadsWP.Pages
         {
             ((RelayCommand)StartCommand).RaiseCanExecuteChanged();
             ((RelayCommand)StopCommand).RaiseCanExecuteChanged();
+        }
+
+        public override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            while (NavigationService.CanGoBack)
+            {
+                NavigationService.RemoveBackEntry();
+            }
         }
 
         public bool IsRecordStarted { get; set; }

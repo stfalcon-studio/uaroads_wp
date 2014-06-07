@@ -64,12 +64,12 @@
             </telerikPrimitives:RadDataBoundListBox>
 
 
-            <Grid Grid.Row="1">
+            <!--<Grid Grid.Row="1">
 
                 <Button Content="Upload"
                         Command="{Binding ProcessTrackCommand}" />
 
-            </Grid>
+            </Grid>-->
         </Grid>
 
         <appBar:BindableApplicationBar IsMenuEnabled="True"
@@ -78,6 +78,7 @@
             <appBar:BindableApplicationBar.Buttons>
                 <appBar:BindableApplicationBarIconButton IconUri="/Assets/AppBar/upload.png"
                                                          Text="upload"
+                                                         Command="{Binding ProcessTrackCommand}"
                                                          IsEnabled="{Binding CanUpload}" />
             </appBar:BindableApplicationBar.Buttons>
 

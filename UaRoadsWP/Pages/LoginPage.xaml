@@ -47,7 +47,11 @@
             <appBar:BindableApplicationBar.Buttons>
                 <appBar:BindableApplicationBarIconButton Text="ok"
                                                          Command="{Binding OkCommand}"
-                                                         IconUri="/Assets/AppBar/check.png" />
+                                                         IconUri="/Assets/AppBar/next.png" />
+
+                <appBar:BindableApplicationBarIconButton Text="skip"
+                                                         Command="{Binding SkipLoginCommand}"
+                                                         IconUri="/Assets/AppBar/cancel.png" />
             </appBar:BindableApplicationBar.Buttons>
         </appBar:BindableApplicationBar>
 

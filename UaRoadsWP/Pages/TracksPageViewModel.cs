@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using GalaSoft.MvvmLight.Command;
 using UaRoadsWP.Models;
 using UaRoadsWP.Models.Db;
@@ -97,6 +98,11 @@ namespace UaRoadsWP.Pages
             Tracks.Clear();
 
             IsBusy = false;
+        }
+
+        public override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            OnLoaded();
         }
     }
 }

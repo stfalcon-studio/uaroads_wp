@@ -31,8 +31,7 @@ namespace UaRoadsWpApi
                 { "os_version", deviceOsVersion },
                 { "uid", deviceUid }
             };
-            var uri = _isProductionEnvironment ? "http://uaroads.com" : "http://backend-uaroads-com.dev.stfalcon.com";
-            return await SendRequest<ApiResponse>(uri + "/register-deviсe", HttpMethod.Post, c);
+            return await SendRequest<ApiResponse>(EServerType.Backend, "register-device", HttpMethod.Post, c);
         }
 
         /// <summary>
@@ -50,7 +49,7 @@ namespace UaRoadsWpApi
             //comment - string (коментар до маршруту)
             //data - string (заархівована строка вигляду: time;pit;lat;lng;type#time;pit;lat;lng;type#..... , де:
 
-            return await SendRequest<ApiResponse>("add", HttpMethod.Post);
+            return await SendRequest<ApiResponse>(EServerType.Api, "add", HttpMethod.Post);
         }
     }
 }
