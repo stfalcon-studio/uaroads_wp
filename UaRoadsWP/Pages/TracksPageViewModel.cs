@@ -26,23 +26,24 @@ namespace UaRoadsWP.Pages
 
             Tracks.CollectionChanged += TracksOnCollectionChanged;
 
-            ProcessTrackCommand = new RelayCommand(async () =>
+            ProcessTrackCommand = new RelayCommand(ProcessTrackOnExecute);
+        }
+
+        private async void ProcessTrackOnExecute()
+        {
+            if (IsBusy) return;
+            IsBusy = true;
+
+            if (Tracks.Any())
             {
+                var tProc = new TrackRawProcessing();
 
-                if (IsBusy) return;
-                IsBusy = true;
+                var track = Tracks.First();
 
-                if (Tracks.Any())
-                {
-                    var tProc = new TrackRawProcessing();
+                await tProc.ProcessTrack(track.Id);
+            }
 
-                    var track = Tracks.First();
-
-                    await tProc.ProcessTrack(track.Id);
-                }
-
-                IsBusy = false;
-            });
+            IsBusy = false;
         }
 
         private void TracksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -62,8 +63,6 @@ namespace UaRoadsWP.Pages
         public void OnLoaded()
         {
             Load();
-
-
         }
 
 
