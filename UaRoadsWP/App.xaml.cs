@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Resources;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using UaRoadsWP.Models.Db;
 using UaRoadsWP.Resources;
 using UaRoadsWP.Services;
 
@@ -56,7 +59,6 @@ namespace UaRoadsWP
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
-
         }
 
         // Code to execute when the application is launching (eg, from Start)

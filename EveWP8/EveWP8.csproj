@@ -83,8 +83,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controls\ProgressIndicatorEx.cs" />
+    <Compile Include="Controls\RelativeAnimatingContentControl.cs" />
     <Compile Include="Extensions\CommonExtensions.cs" />
     <Compile Include="Extensions\VisualTreeExtensions.cs" />
+    <Compile Include="Helpers\PageHelper.cs" />
+    <Compile Include="Services\ProgressIndicatorService.cs" />
     <Compile Include="XAML\Behaviors\UpdateSourceOnTextChangedBehavior.cs" />
     <Compile Include="XAML\Controls\AppBar\BindableApplicationBar.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
@@ -110,6 +114,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="XAML\default.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

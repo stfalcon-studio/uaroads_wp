@@ -24,9 +24,24 @@ namespace UaRoadsWP.Services
 
             var folder = await ApplicationData.Current.LocalFolder.GetFolderAsync(AppConstant.DataFolderName);
 
+            //folder.DeleteAsync()
+
             var res = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 
             return res;
         }
+
+        public static async Task<StorageFile> GetFileForRead(string fileName)
+        {
+            CheckFolder();
+
+            var folder = await ApplicationData.Current.LocalFolder.GetFolderAsync(AppConstant.DataFolderName);
+
+            var res = await folder.GetFileAsync(fileName);
+
+            return res;
+        }
+
+
     }
 }

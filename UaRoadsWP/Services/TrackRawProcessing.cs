@@ -112,6 +112,28 @@ namespace UaRoadsWP.Services
                     }
                 }
             }
+
+            dic = null;
+
+            targetFile = null;
+
+
+            CotvertZipToBase64(tcs, track.TrackId);
+
+
+            //tcs.SetResult(true);
+        }
+
+        private async void CotvertZipToBase64(TaskCompletionSource<bool> tcs, Guid trackId)
+        {
+            var targetFile = await FileService.GetFileForRead(trackId.ToString());
+
+            using (var fileStream = (await targetFile.OpenAsync(FileAccessMode.ReadWrite)).AsStreamForRead())
+            {
+                var reader = new StreamReader(fileStream);
+                string text = reader.ReadToEnd();
+            }
+
             tcs.SetResult(true);
         }
     }
