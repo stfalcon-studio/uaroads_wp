@@ -8,6 +8,7 @@ using System.Windows.Markup;
 using System.Windows.Navigation;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Phone.Controls;
+using Microsoft.Phone.Info;
 using Microsoft.Phone.Shell;
 using UaRoadsWP.Models.Db;
 using UaRoadsWP.Resources;
@@ -39,6 +40,7 @@ namespace UaRoadsWP
 
             // Language display initialization
             InitializeLanguage();
+            
 
             // Show graphics profiling information while debugging.
             if (Debugger.IsAttached)

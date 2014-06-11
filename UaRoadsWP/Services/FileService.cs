@@ -12,7 +12,7 @@ namespace UaRoadsWP.Services
     {
         public async static void CheckFolder()
         {
-            if (!System.IO.File.Exists(Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstant.DataFolderName)))
+            if (!System.IO.Directory.Exists(Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstant.DataFolderName)))
             {
                 await ApplicationData.Current.LocalFolder.CreateFolderAsync(AppConstant.DataFolderName);
             }
@@ -24,9 +24,12 @@ namespace UaRoadsWP.Services
 
             var folder = await ApplicationData.Current.LocalFolder.GetFolderAsync(AppConstant.DataFolderName);
 
-            //folder.DeleteAsync()
+            if (System.IO.File.Exists(Path.Combine(folder.Path, fileName)))
+            {
+                File.Delete(Path.Combine(folder.Path, fileName));
+            }
 
-            var res = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            var res = await folder.CreateFileAsync(fileName, CreationCollisionOption.FailIfExists);
 
             return res;
         }

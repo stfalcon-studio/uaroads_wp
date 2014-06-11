@@ -75,7 +75,7 @@ namespace UaRoadsWP.Services
 
             var targetFile = await FileService.GetFileForWrite(track.TrackId.ToString());
 
-            using (var fileStream = (await targetFile.OpenAsync(FileAccessMode.ReadWrite)).AsStreamForWrite())
+            using (var fileStream = await targetFile.OpenStreamForWriteAsync())
             {
                 using (var compressionStream = new GZipStream(fileStream, CompressionMode.Compress))
                 {
@@ -118,23 +118,93 @@ namespace UaRoadsWP.Services
             targetFile = null;
 
 
-            CotvertZipToBase64(tcs, track.TrackId);
+            await ConvertZipToBase64(tcs, track.TrackId);
+
+
+            await Test(tcs, track.TrackId);
 
 
             //tcs.SetResult(true);
         }
 
-        private async void CotvertZipToBase64(TaskCompletionSource<bool> tcs, Guid trackId)
+        private async Task ConvertZipToBase64(TaskCompletionSource<bool> tcs, Guid trackId)
         {
             var targetFile = await FileService.GetFileForRead(trackId.ToString());
 
-            using (var fileStream = (await targetFile.OpenAsync(FileAccessMode.ReadWrite)).AsStreamForRead())
+            string text = "";
+
+            byte[] fileBytes;
+            using (var fileStream = await targetFile.OpenStreamForReadAsync())
             {
-                var reader = new StreamReader(fileStream);
-                string text = reader.ReadToEnd();
+                using (var ms = new MemoryStream())
+                {
+                    fileStream.CopyTo(ms);
+
+                    fileBytes = ms.ToArray();
+                }
+            }
+
+            var res = Convert.ToBase64String(fileBytes);
+
+            var bytes = StringToAscii(res);
+
+            using (var fileStream = await targetFile.OpenStreamForWriteAsync())
+            {
+                fileStream.Write(bytes, 0, bytes.Length);
+            }
+
+            //tcs.SetResult(true);
+        }
+
+        private async Task Test(TaskCompletionSource<bool> tcs, Guid trackId)
+        {
+            var targetFile = await FileService.GetFileForRead(trackId.ToString());
+
+            using (var fileStream = await targetFile.OpenStreamForReadAsync())
+            {
+
+                using (var ms = new MemoryStream())
+                {
+                    fileStream.CopyTo(ms);
+
+                    var bytes = ms.ToArray();
+
+                    var charArray = new char[bytes.Length];
+
+                    for (int i = 0; i < bytes.Length; i++)
+                    {
+                        charArray[i] = (char)bytes[i];
+                    }
+
+                    var bytes2 = Convert.FromBase64CharArray(charArray, 0, charArray.Length);
+
+
+                    using (var ms2 = new MemoryStream(bytes2, false))
+                    {
+                        using (var decompressed = new GZipStream(ms2, CompressionMode.Decompress))
+                        using (var reader = new StreamReader(decompressed))
+                        {
+                            string text = reader.ReadToEnd();
+
+                            Debug.WriteLine("ROUTE DATA \r\n{0}", text);
+                        }
+                    }
+                }
             }
 
             tcs.SetResult(true);
+        }
+
+        public static byte[] StringToAscii(string s)
+        {
+            byte[] retval = new byte[s.Length];
+            for (int ix = 0; ix < s.Length; ++ix)
+            {
+                char ch = s[ix];
+                if (ch <= 0x7f) retval[ix] = (byte)ch;
+                else retval[ix] = (byte)'?';
+            }
+            return retval;
         }
     }
 }

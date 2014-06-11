@@ -19,6 +19,8 @@ namespace UaRoadsWP.Pages
 
         public LoginPageViewModel()
         {
+            UserEmail = "bondarenkod@windowslive.com";
+
             OkCommand = new RelayCommand(async () =>
             {
                 if (IsBusy) return;

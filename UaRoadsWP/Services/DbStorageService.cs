@@ -29,12 +29,12 @@ namespace UaRoadsWP.Services
 
         public async Task<List<DbTrackLocation>> GetTrackLocations(short trackId)
         {
-            return await GetAsyncConnection().Table<DbTrackLocation>().Where(x => x.Id == trackId).ToListAsync();
+            return await GetAsyncConnection().Table<DbTrackLocation>().Where(x => x.TrackId == trackId).ToListAsync();
         }
 
         public async Task<List<DbTrackPit>> GetTrackPits(short trackId)
         {
-            return await GetAsyncConnection().Table<DbTrackPit>().Where(x => x.Id == trackId).ToListAsync();
+            return await GetAsyncConnection().Table<DbTrackPit>().Where(x => x.TrackId == trackId).ToListAsync();
         }
 
         public async Task TrackInsertUpdate(DbTrack item)
