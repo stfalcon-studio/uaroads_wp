@@ -40,16 +40,21 @@ namespace UaRoadsWpApi
         /// <param name="deviceUid">device UID</param>
         /// <param name="routeId">route ID, should be unique</param>
         /// <param name="routeComment">route comment</param>
-        /// <param name="routeData">route data</param>
+        /// <param name="data">route data</param>
         /// <returns></returns>
-        public async Task<ApiResponse> Add(string deviceUid, Guid routeId, List<RoutePoint> routeComment, string routeData)
+        public async Task<ApiResponse> Add(string deviceUid, Guid routeId, string data, string routeComment)
         {
-            //uid - string (IMEI девайсу)
-            //routeId - string (Id роуту, який генерується на стороні двайсу, має бути унікальним)
-            //comment - string (коментар до маршруту)
-            //data - string (заархівована строка вигляду: time;pit;lat;lng;type#time;pit;lat;lng;type#..... , де:
+            //comment=formula5&data=H4sIAAAAAAAEAMWSOQ5CMRBDD0P/NfuifxwK9BtAXI+CI3EFInYkVxSQ8ike25Ocjyc2kghWoaCYed4dls2yXT0xMyXC3ggLDWw5dWhIVLCn6Kw5eY0jZiHVPK/3f5GAvEEGsDIxwkECsFGjIYZX5Ex6D59WrVxldQ3f1E7EI2t+ZP+ZAoTFHQI3Doc4GS45vdGHKzy7WB6VRqFq0nHxVknJuYcHDZv3Tt9IvAuYj62hh2/vfuELfVQeEU0DAAA=&routeId=idTest60&uid=___________________DEVICE_ID_
 
-            return await SendRequest<ApiResponse>(EServerType.Api, "add", HttpMethod.Post);
+            var c = new RequestParametersContainer
+            {
+                { "comment", routeComment }, 
+                { "data", data },
+                { "routeId", routeId.ToString() }, 
+                { "uid", deviceUid }
+            };
+
+            return await SendRequest<ApiResponse>(EServerType.Api, "add", HttpMethod.Post, c);
         }
     }
 }

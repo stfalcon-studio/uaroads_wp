@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Device.Location;
+using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using GalaSoft.MvvmLight.Command;
@@ -22,21 +24,33 @@ namespace UaRoadsWP.Pages
             {
                 if (IsBusy) return;
                 IsBusy = true;
-                var track = new DbTrack()
+
+
+                var res = await new LocationStarter().PreheatService();
+
+                if (res == GeoPositionStatus.Ready)
                 {
-                    TrackComment = "comment " + DateTime.Now.ToString("g"),
-                    TrackStatus = ETrackStatus.Started
-                };
+                    Debug.WriteLine("START OK");
+                }
 
-                await new DbStorageService().TrackInsertUpdate(track);
-                SettingsService.LastRecordedRoad = track.TrackId;
-                SettingsService.CurrentTrack = track.Id;
-                SimpleIoc.Default.GetInstance<AccelerometerRecordService>().Start();
 
-                SimpleIoc.Default.GetInstance<LocationRecordService>().Start();
 
-                IsRecordStarted = true;
-                RaisePropertyChanged(() => IsRecordStarted);
+
+                //var track = new DbTrack()
+                //{
+                //    TrackComment = "comment " + DateTime.Now.ToString("g"),
+                //    TrackStatus = ETrackStatus.Started
+                //};
+
+                //await new DbStorageService().TrackInsertUpdate(track);
+                //SettingsService.LastRecordedRoad = track.TrackId;
+                //SettingsService.CurrentTrack = track.Id;
+                //SimpleIoc.Default.GetInstance<AccelerometerRecordService>().Start();
+
+                //SimpleIoc.Default.GetInstance<LocationRecordService>().Start();
+
+                //IsRecordStarted = true;
+                //RaisePropertyChanged(() => IsRecordStarted);
                 UpdateState();
                 IsBusy = false;
             }, () =>
