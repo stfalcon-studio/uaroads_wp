@@ -1,0 +1,80 @@
+﻿<cm:CaliburnApplication x:Class="UR.WP81.App"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:cm="using:Caliburn.Micro"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        mc:Ignorable="d"
+                        RequestedTheme="Dark"
+                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+                        xmlns:interactivity="using:Microsoft.Xaml.Interactivity">
+
+    <Application.Resources>
+        <!--<vm:ViewModelLocator x:Key="Locator"
+                             xmlns:vm="using:Megogo.ViewModel" />-->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="/Assets/AppLocalStyles.xaml" />
+
+                <ResourceDictionary Source="/Assets/AppMenuButtonStyle.xaml" />
+                <ResourceDictionary Source="/Assets/AppWatchMoreButtonStyle.xaml" />
+                <ResourceDictionary Source="/Assets/ObjectDependedStyles/AppPlusPageStyle.xaml" />-->
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </Application.Resources>
+
+
+
+</cm:CaliburnApplication>
+
+
+<!--<Application x:Class="Megogo.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:i="using:Microsoft.Xaml.Interactivity" 
+             xmlns:core="using:Microsoft.Xaml.Interactions.Core" 
+             xmlns:viewModel="using:Megogo.ViewModel" 
+             xmlns:converters="using:Megogo.Converters"
+             xmlns:controls="using:Q42.WinRT.Controls">
+    
+</Application>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<Application x:Class="Megogo.App" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:i="using:Microsoft.Xaml.Interactivity" 
+             xmlns:core="using:Microsoft.Xaml.Interactions.Core" 
+             xmlns:converters="using:Megogo.Converters" 
+             xmlns:controls="using:Q42.WinRT.Controls" 
+        >
+  
+
+    
+    </Application>-->
+
+<!--<Application
+    x:Class="UR.WP81.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UR.WP81">
+
+</Application>-->
