@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Windows.UI.Xaml;
+using Eve.Core.WPA81.UI;
+using UR.Core.WP81.API.ApiResponses;
 
 namespace UR.Core.WP81.API
 {
@@ -7,17 +11,20 @@ namespace UR.Core.WP81.API
     {
         //private static Dictionary<string, bool> _allErrors;
 
+        private static List<string> _messageBoxList;
+
         static ApiResponseProcessor()
         {
             //InitAllErrors();
             //InitErrorsHandlerRules();
 
+            _messageBoxList = new List<string>(3);
         }
 
+
+
         /// <summary>
-        /// 
         /// </summary>
-        /// <param name="serverVariant"></param>
         /// <param name="response"></param>
         /// <param name="showMessage"></param>
         /// <param name="getSuccess"></param>
@@ -31,108 +38,107 @@ namespace UR.Core.WP81.API
         {
             var success = getSuccess != null ? getSuccess(response) : response.IsSuccess;
 
+            //if (response.logUserOut)
+            //{
+            //    //todo не стирать, вомзожно, как временная мера. Сделано затем, что бы данный тип ошибок обрабатывать одинаково. Текст ошибки будет выводится после перехода на окно логина 
+            //    //response.errorCode = ErrorCodes.CRITICAL_ERROR;
+
+            //    //AppViewModel.WipeUserData();
+            //}
+
             if (success) return true;
 
-            if (showMessage)
-            {
-                var message = GetErrorMessageText(response);
 
-                if (!String.IsNullOrEmpty(message))
-                {
-                    ShowMsgBox(message, messageBoxStyle);
-                }
-            }
+
+
+            //var service = Bootstrapper.Current.Container.Resolve<ApiErrorHandlerService>();
+
+            //if (!showMessage)
+            //{
+            //    if (!service.CanDeveloperIgnoreThis(response.errorCode))
+            //    {
+            //        showMessage = true;
+            //    }
+            //}
+
+            //if (showMessage)
+            //{
+            //    if (service.HasHandler(response.errorCode))
+            //    {
+            //        showMessage = service.ShowMessageIfCanProcessThisError(response.errorCode);
+            //    }
+            //}
+
+            ////service.CallErrorHandler(response);
+
+            //if (showMessage)
+            //{
+            ShowErrorFromResponse(response, messageBoxStyle);
+            //}
             return false;
         }
 
-        public static void ShowMsgBox(string message, Style messageBoxStyle = null)
+        private static async void ShowErrorFromResponse(ApiResponse response, Style messageBoxStyle)
         {
-            //var mb = new CustomMessageBox();
-            //if (messageBoxStyle != null)
-            //{
-            //    mb.Style = messageBoxStyle;
-            //}
-            //mb.Title = "Error";
-            //mb.Message = message;
-            //mb.LeftButtonContent = "Ok";
-            //mb.Show();
+            if (response.ErrorCode == "NETWORK_ERROR")
+            {
+                _messageBoxList.Add("Нет подключения к сети, попробуйте позже");
+            }
+            else
+            {
+                var errorMessage = response.ErrorMessage;
+                if (response.Errors != null)
+                {
+                    errorMessage += "\r\n";
 
-            //MessageBox.Show(message, "AppName", MessageBoxButton.OK);
+                    foreach (var error in response.Errors)
+                    {
+                        errorMessage += error.ErrorMessage + "\r\n";
+                    }
+                }
+
+                errorMessage = errorMessage.Trim();
+
+                if (string.IsNullOrEmpty(errorMessage))
+                {
+                    errorMessage = "Произошла неизвестная ошибка, попробуйте позже";
+                }
+
+                _messageBoxList.Add(errorMessage);
+            }
+
+            Show();
         }
 
-        public static string GetErrorMessageText(ApiResponse response)
+        private static bool isBusy = false;
+
+        private static async void Show()
         {
-            var message = response.message;
+            if (isBusy) return;
 
-            //if (String.IsNullOrEmpty(response.errorCode))
-            //{
-            //    response.message = GetErrorMessage(response);
-            //    message = GetErrorMessage(response);
-            //}
+            isBusy = true;
+            try
+            {
+                while (_messageBoxList.Any())
+                {
+                    var body = _messageBoxList[0];
 
+                    _messageBoxList.RemoveAt(0);
 
+                    if (string.IsNullOrEmpty(body)) continue;
 
-            return message;
+                    await MessageDialogExt.CreateFacade(body, "MEGOGO").WithCommand("Закрыть").ShowAsync();
+                }
+            }
+            finally
+            {
+                isBusy = false;
+                if (_messageBoxList.Any())
+                {
+                    Show();
+                }
+            }
         }
 
-        //public static string GetErrorMessage(ApiResponse response)
-        //{
-        //    //todo add
-        //    return "error message";
-        //    //var code = response.errorCode;
-        //    //return GetErrorMessage(code);
-        //}
-
-        public static string GetErrorMessage(string code)
-        {
-            //todo add
-            //var message = ResourceManagerHelper.GetString("ErrorCode_" + code);
-            return "message";
-        }
-
-
-        //private static void InitErrorsHandlerRules()
-        //{
-
-
-        //}
-
-
-
-        //private static void InitAllErrors()
-        //{
-        //    _allErrors = new Dictionary<string, bool>();
-
-        //    var classType = typeof(ErrorCodes);
-
-        //    var allFields = classType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-
-        //    var allConstants = allFields.Where(x => x.IsLiteral && !x.IsInitOnly).ToList();
-
-        //    foreach (var constant in allConstants)
-        //    {
-        //        _allErrors.Add((string)constant.GetRawConstantValue(), false);
-        //    }
-        //}
-    }
-
-    public class ErrorDescriptionContainer
-    {
-        public ErrorDescriptionContainer()
-        {
-
-        }
-
-        public ErrorDescriptionContainer(Action<object> actionOnError, bool canDeveloperIgnoreThisError = true)
-        {
-            CanDeveloperIgnoreThisError = canDeveloperIgnoreThisError;
-            ActionOnError = actionOnError;
-        }
-
-        /// <summary>
-        /// if critic error - developer cant hide error message
-        /// </summary>
-        public bool CanDeveloperIgnoreThisError { get; set; }
-        public Action<object> ActionOnError { get; set; }
     }
 }

@@ -7,13 +7,31 @@
                         RequestedTheme="Dark"
                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                         xmlns:core="using:Microsoft.Xaml.Interactions.Core"
-                        xmlns:interactivity="using:Microsoft.Xaml.Interactivity">
+                        xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+                        xmlns:converters="using:Eve.Core.WPA81.Converters">
 
     <Application.Resources>
         <!--<vm:ViewModelLocator x:Key="Locator"
                              xmlns:vm="using:Megogo.ViewModel" />-->
+     
         <ResourceDictionary>
+
+            <converters:CBoolNotBool x:Key="CBoolNotBool" />
+            <converters:CBoolNotOpacity x:Key="CBoolNotOpacity" />
+            <converters:CBoolOpacity x:Key="CBoolOpacity" />
+
+
+            <converters:EmptyNullTextToVisibilityConverter x:Key="EmptyNullTextToVisibilityConverter" />
+            <converters:EmptyListVisibilityConverter x:Key="EmptyListVisibilityConverter" />
+            <converters:ToLowerTextConverter x:Key="ToLowerTextConverter" />
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:BooleanToOppositeVisibilityConverter x:Key="BooleanToOppositeVisibilityConverter" />
+            <converters:ToUpperTextConverter x:Key="ToUpperTextConverter" />
+            <converters:IntToOppositeVisibilityConverter x:Key="IntToOppositeVisibilityConverter" />
+
             <ResourceDictionary.MergedDictionaries>
+
+
                 <!--<ResourceDictionary Source="/Assets/AppLocalStyles.xaml" />
 
                 <ResourceDictionary Source="/Assets/AppMenuButtonStyle.xaml" />

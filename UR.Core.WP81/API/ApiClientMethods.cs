@@ -5,6 +5,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UaRoadsWpApi.Generic;
+using UR.Core.WP81.API.ApiResponses;
 
 namespace UR.Core.WP81.API
 {
@@ -29,7 +30,7 @@ namespace UR.Core.WP81.API
                 { "os_version", deviceOsVersion },
                 { "uid", deviceUid }
             };
-            return await SendRequest<ApiResponse>(EServerType.Backend, "register-device", HttpMethod.Post, c);
+            return await SendRequest<ApiResponse>("register-device", HttpMethod.Post, c);
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace UR.Core.WP81.API
                 { "uid", deviceUid }
             };
 
-            return await SendRequest<ApiResponse>(EServerType.Api, "add", HttpMethod.Post, c);
+            return await SendRequest<ApiResponse>("add", HttpMethod.Post, c);
         }
     }
 }

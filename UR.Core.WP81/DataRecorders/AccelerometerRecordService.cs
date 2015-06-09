@@ -2,111 +2,161 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Devices.Sensors;
-using Microsoft.Xna.Framework;
-using UaRoadsWP.Models.Db;
-using Accelerometer = Microsoft.Devices.Sensors.Accelerometer;
-using AccelerometerReading = Microsoft.Devices.Sensors.AccelerometerReading;
+using Windows.Devices.Sensors;
+using UR.Core.WP81.Services;
 
-namespace UaRoadsWP.Services
+namespace UR.Core.WP81.DataRecorders
 {
     public class AccelerometerRecordService
     {
         private Accelerometer _accelSensor;
-        private Vector3 _accelReading;
+        private DateTimeOffset _offset;
 
-        private short _currentTrackId;
-        private List<DbTrackPit> _accelerometerReadings;
+        private Timer _timer;
 
-        private bool _accelStarted;
+        private double _maxValue;
+        private const double GravityEarth = 9.81;
+
+        //private Vector3 _accelReading;
+
+        //private short _currentTrackId;
+        //private List<DbTrackPit> _accelerometerReadings;
+
+        //private bool _accelStarted;
+        
 
         public AccelerometerRecordService()
         {
-            _accelerometerReadings = new List<DbTrackPit>(AppConstant.SensorCacheCount);
+            //_accelerometerReadings = new List<DbTrackPit>(AppConstant.SensorCacheCount);
+
+            _maxValue = 0;
         }
 
+      
 
         public void Start()
         {
-            if (!Accelerometer.IsSupported)
+            //if (!Accelerometer.IsSupported)
+            //{
+            //    Debug.WriteLine("SENSOR NOT SUPPORTED");
+            //    return;
+            //}
+
+            //if (!SettingsService.CurrentTrack.HasValue) return;
+
+            //_currentTrackId = SettingsService.CurrentTrack.Value;
+
+            _timer = new Timer(TimerCallback, null, 500, 500);
+
+            _accelSensor = Accelerometer.GetDefault();
+
+            if (_accelSensor != null)
             {
-                Debug.WriteLine("SENSOR NOT SUPPORTED");
-                return;
+                _accelSensor.ReadingChanged += AccelSensorOnCurrentValueChanged;
+
+                _accelSensor.ReportInterval = AppConstant.SensorUpdateInterval;
+                //_accelSensor.Start();
+            }
+            else
+            {
+                Debug.WriteLine("CANT CREATE ACCELEROMETER");
+            }
+        }
+
+        
+        private void TimerCallback(object state)
+        {
+            RecordService.GetInstance().AddAccelerometerPoint(_offset, _maxValue);
+
+            _maxValue = 0;
+
+            //Debug.WriteLine("callback");
+        }
+
+        private double gX, gY, gZ;
+
+        private void AccelSensorOnCurrentValueChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
+        {
+            gX = args.Reading.AccelerationX / GravityEarth;
+            gY = args.Reading.AccelerationY / GravityEarth;
+            gZ = args.Reading.AccelerationZ / GravityEarth;
+
+            //// gForce will be close to 1 when there is no movement.
+            double accA = Math.Abs(Math.Sqrt(gX * gX + gY * gY + gZ * gZ) - 1);
+
+            if (accA > _maxValue)
+            {
+                _maxValue = accA;
+                _offset = DateTimeOffset.Now;
             }
 
-            if (!SettingsService.CurrentTrack.HasValue) return;
-
-            _currentTrackId = SettingsService.CurrentTrack.Value;
-
-            _accelSensor = new Accelerometer();
-
-            _accelSensor.CurrentValueChanged += AccelSensorOnCurrentValueChanged;
-
-            _accelSensor.TimeBetweenUpdates = TimeSpan.FromMilliseconds(AppConstant.SensorUpdateInterval);
-
-            _accelSensor.Start();
+          
         }
 
 
         public async void Stop()
         {
-            if (!Accelerometer.IsSupported)
+            //if (!Accelerometer.IsSupported)
+            //{
+            //    Debug.WriteLine("SENSOR NOT SUPPORTED");
+            //    return;
+            //}
+
+            //await FlushBuffer();
+
+            //_currentTrackId = 0;
+
+            if (_timer != null)
             {
-                Debug.WriteLine("SENSOR NOT SUPPORTED");
-                return;
+                _timer.Dispose();
+                _timer = null;
             }
-
-            await FlushBuffer();
-
-            _currentTrackId = 0;
 
             if (_accelSensor != null)
             {
-                _accelSensor.CurrentValueChanged -= AccelSensorOnCurrentValueChanged;
-                if (_accelSensor.State == SensorState.Ready)
-                {
-                    _accelSensor.Stop();
-                }
-                _accelSensor.Dispose();
+                _accelSensor.ReadingChanged -= AccelSensorOnCurrentValueChanged;
+
+                _accelSensor = null;
             }
         }
 
-        private async void AccelSensorOnCurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> args)
-        {
-            var res = Math.Sqrt(args.SensorReading.Acceleration.X * args.SensorReading.Acceleration.X +
-                args.SensorReading.Acceleration.Y * args.SensorReading.Acceleration.Y +
-                args.SensorReading.Acceleration.Z * args.SensorReading.Acceleration.Z);
-            //Debug.WriteLine("{0} {1}", args.SensorReading.Timestamp, res);
+        // private async void AccelSensorOnCurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> args)
+        //{
+        //var res = Math.Sqrt(args.SensorReading.Acceleration.X * args.SensorReading.Acceleration.X +
+        //    args.SensorReading.Acceleration.Y * args.SensorReading.Acceleration.Y +
+        //    args.SensorReading.Acceleration.Z * args.SensorReading.Acceleration.Z);
+        ////Debug.WriteLine("{0} {1}", args.SensorReading.Timestamp, res);
 
-            _accelerometerReadings.Add(new DbTrackPit()
-            {
-                TimeStamp = args.SensorReading.Timestamp,
-                PitValue = (float)res,
-                TrackId = _currentTrackId
-            });
+        //_accelerometerReadings.Add(new DbTrackPit()
+        //{
+        //    TimeStamp = args.SensorReading.Timestamp,
+        //    PitValue = (float)res,
+        //    TrackId = _currentTrackId
+        //});
 
-            if (_accelerometerReadings.Count == AppConstant.SensorCacheCount)
-            {
-                await FlushBuffer();
-            }
-        }
+        //if (_accelerometerReadings.Count == AppConstant.SensorCacheCount)
+        //{
+        //    await FlushBuffer();
+        //}
+        //}
 
-        private async Task FlushBuffer()
-        {
-            if (_accelerometerReadings != null)
-            {
-                if (_accelerometerReadings.Any())
-                {
-                    var recordsCurrent = _accelerometerReadings;
+        //private async Task FlushBuffer()
+        //{
+        //    if (_accelerometerReadings != null)
+        //    {
+        //        if (_accelerometerReadings.Any())
+        //        {
+        //            var recordsCurrent = _accelerometerReadings;
 
-                    _accelerometerReadings = new List<DbTrackPit>(AppConstant.SensorCacheCount);
+        //            _accelerometerReadings = new List<DbTrackPit>(AppConstant.SensorCacheCount);
 
-                    await new DbStorageService().TackPitInsert(recordsCurrent);
+        //            await new DbStorageService().TackPitInsert(recordsCurrent);
 
-                    recordsCurrent.Clear();
-                }
-            }
-        }
+        //            recordsCurrent.Clear();
+        //        }
+        //    }
+        //}
     }
 }

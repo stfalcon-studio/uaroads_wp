@@ -1,146 +1,242 @@
-﻿#define SANDBOX_ENV
-#undef SANDBOX_ENV
-
+﻿
+//"";
 #define LOG_REQ
 //#undef LOG_REQ
+
+
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
+using Windows.Security.Cryptography;
+using Windows.Security.Cryptography.Core;
+using Windows.Storage.Streams;
 using Newtonsoft.Json;
-using UaRoadsWpApi;
-using UaRoadsWpApi.Generic;
+using Newtonsoft.Json.Linq;
+using UR.Core.WP81.API.ApiResponses;
+using UR.Core.WP81.Services;
 
 namespace UR.Core.WP81.API
 {
     public partial class ApiClient
     {
         private HttpClient _httpClient;
-        private bool _isProductionEnvironment;
 
-        private const string EndpointFrontendBackend =
-#if SANDBOX_ENV
-            "http://backend-uaroads-com.dev.stfalcon.com/";
-#else
- "http://uaroads.com/";
-#endif
+        private HttpClientHandler _httpClientHandler;
 
-        private const string EndpointApi =
-#if SANDBOX_ENV
-            "http://uaroads-com.dev.stfalcon.com/";
-#else
- "http://api.uaroads.com/";
-#endif
+        private static CookieContainer _cookieContainer;
 
-
-        public static Action<string> OnErrorAction;
-
-        public ApiClient()
+        private ApiClient()
         {
-            _isProductionEnvironment = false;
-
-            _httpClient =
-            new HttpClient(new HttpClientHandler
+            //var cc = new CookieContainer();
+            _httpClientHandler = new HttpClientHandler()
             {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            });
+                UseCookies = true,
+                //CookieContainer = cc,
+                AllowAutoRedirect = true,
+            };
+
+            //AddCookies(_httpClientHandler);
+
+            _httpClient = new HttpClient(_httpClientHandler);
+
+            AddHeaders(_httpClient);
+        }
+
+        public static ApiClient Create()
+        {
+            return new ApiClient();
         }
 
 
-        private string GetUrl(EServerType endpointType)
+        private static bool _logger = false;
+        public static void SetLogger(bool enabled)
         {
-            return endpointType == EServerType.Api ? EndpointApi : EndpointFrontendBackend;
+            _logger = enabled;
         }
 
-        async Task<T> SendRequest<T>(EServerType endpointType, string url, HttpMethod httpMethod, RequestParametersContainer container = null) where T : ApiResponse, new()
+        protected async Task<T> SendRequest<T>(string url, HttpMethod httpMethod, RequestParametersContainer container = null, bool includeJsonString = false) where T : ApiResponse, new()
         {
-            var message = new HttpRequestMessage(httpMethod, Path.Combine(GetUrl(endpointType), url));
+            //if (url.Contains("auth"))
+            //{
 
-            message.Content = ConvertToHttpContent(container);
+            //}
 
-            message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+            if (container == null)
+            {
+                container = new RequestParametersContainer();
+            }
+
+            //var sign = GetSign(container);
+
+            //container.Add("sign", sign);
+
+
+
+            //var ub = new Uri(new Uri(AppConstants.BaseApiUrl), url + "?" + query);
+
+            var ub = new Uri(new Uri(AppConstant.BaseApiUrl), url);
+
+            if (httpMethod == HttpMethod.Get)
+            {
+                ub = AttachParameters(ub, container);
+            }
+
+
+            var message = new HttpRequestMessage(httpMethod, ub)
+            {
+                //Content = new StringContent(query),
+
+            };
+
+            if (httpMethod == HttpMethod.Post)
+            {
+                var query = await ConvertToHttpContent(container).ReadAsStringAsync();
+
+                message.Content = new StringContent(query);
+            }
+
 
             try
             {
+                //throw new Exception("test");
 #if DEBUG
 #if LOG_REQ
-                var str = "";
-                if (message.Content != null)
-                {
-                    var buf = await message.Content.ReadAsByteArrayAsync();
-                    var enc = new System.Text.UTF8Encoding();
-                    str = enc.GetString(buf, 0, buf.Length);
-                }
 
-                Debug.WriteLine("REQUEST:\t{0}\r\n{1}\r\n", message.RequestUri.ToString(), str);
+                if (_logger)
+                {
+                    Debug.WriteLine("\r\nHEADERS:");
+
+                    foreach (var header in _httpClient.DefaultRequestHeaders)
+                    {
+                        Debug.WriteLine("{0}:{1}", header.Key, header.Value.Aggregate((y, u) => y + "," + u));
+                    }
+
+                    var str = "";
+                    if (message.Content != null)
+                    {
+                        str = await message.Content.ReadAsStringAsync();
+                    }
+                    Debug.WriteLine("REQUEST:\t{0}\r\n{1}\r\n", message.RequestUri, str);
+                }
 #endif
 #endif
+
+
+
+                //var param = new Dictionary<string, string>();
+
+                //if (container != null)
+                //{
+                //    foreach (var k in container)
+                //    {
+                //        param.Add(k.Key, k.Value);
+                //    }
+                //}
+
+                //string s = await Get(url, httpMethod, container == null ? null : param);
 
                 var response = await _httpClient.SendAsync(message);
-
                 var s = await response.Content.ReadAsStringAsync();
 
 
+                // _//httpClientHandler
+
+
+
 #if DEBUG
 #if LOG_REQ
-                Debug.WriteLine("RESPONSE:\r\n{0}\r\n", s);
-#endif
-#endif
-
-
-                if (String.IsNullOrEmpty(s) & response.StatusCode != HttpStatusCode.OK)
+                if (_logger)
                 {
-                    return new T()
-                    {
-                        success = false,
-                        message = ApiResponseProcessor.GetErrorMessage(ErrorCodes.NETWORK_ERROR)
-                    };
+                    Debug.WriteLine("RESPONSE: \r\n{0}\r\n", s);
                 }
+#endif
+#endif
 
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    return new T()
-                    {
-                        success = false,
-                        message = s
-                    };
+                    Debug.WriteLine("RESPONSE ERROR CODE:\t{0}\r\n{1}\r\n", response.StatusCode,
+                        response.ReasonPhrase);
                 }
 
-#if LOG_REQ
-                Debug.WriteLine("RESPONSE:\r\n{0}\r\n", s);
-#endif
 
-                try
+                if (string.IsNullOrEmpty(s))//s
                 {
-                    return JsonConvert.DeserializeObject<T>(s);
-                }
-                catch (Exception)
-                {
-                    if (response.StatusCode == HttpStatusCode.OK)
-                        return new T()
-                        {
-                            success = true
-                        };
-
                     return new T()
                     {
-                        message = ApiResponseProcessor.GetErrorMessage(ErrorCodes.NETWORK_ERROR)
+                        ErrorCode = "NETWORK_ERROR",
+                        ErrorMessage = response.StatusCode + response.ReasonPhrase
                     };
                 }
 
 
+                //#if LOG_REQ
+                //                Debug.WriteLine("RESPONSE:\r\r\n{0}\r\r\n", s);
+                //#endif
+                //check for coocies
+
+                //if (includeJsonString)
+                //{
+                //    var res = JsonConvert.DeserializeObject<T>(s);
+                //    //res.jsonString = s;
+
+                //    return res;
+                //}
+
+                var apiresponse = JsonConvert.DeserializeObject<T>(s);
+
+                var uri = new Uri(AppConstant.BaseApiUrl);
+
+                //get cookie values if only SS is empty
+                //if (StateService.Instance.UserToken == null)
+                //{
+                //    _cookieContainer = null; // delete static field with auth data. don't really need
+
+                //    var cookieCoollection = _httpClientHandler.CookieContainer.GetCookies(uri).Cast<Cookie>().ToList();
+
+                //    var c = cookieCoollection.FirstOrDefault(x => x.Name == "token");
+
+                //    if (c != null && !string.IsNullOrWhiteSpace(c.Value))
+                //    {
+                //        var token = c.Value;
+
+                //        var cuid = cookieCoollection.FirstOrDefault(x => x.Name == "uid");
+
+                //        if (cuid != null && !string.IsNullOrWhiteSpace(cuid.Value))
+                //        {
+                //            var uid = cuid.Value;
+
+                //            var resp = (AUserApiResponse)(ApiResponse)apiresponse;
+
+                //            resp.Token = token;
+                //            resp.Uid = uid;
+
+                //            //var ut = new UserToken();
+                //            //ut.Set(token, uid);
+                //            //StateService.Instance.UserToken = ut;
+                //        }
+                //    }
+                //}
+
+                return apiresponse;
             }
             catch (Exception ex)
             {
 #if LOG_REQ
-                Debug.WriteLine("ERROR:\r\n{0}\r\n", ex.Message);
+                Debug.WriteLine("ERROR:\r\r\n{0}\r\r\n", ex.Message);
 #endif
+
                 return new T()
                 {
-                    message = ApiResponseProcessor.GetErrorMessage(ErrorCodes.NETWORK_ERROR)
+                    ErrorCode = "NETWORK_ERROR",
+                    ErrorMessage = ex.Message
                 };
             }
             finally
@@ -149,41 +245,157 @@ namespace UR.Core.WP81.API
             }
         }
 
-        HttpContent ConvertToHttpContent(RequestParametersContainer container)
+
+        public static Uri AttachParameters(Uri uri, RequestParametersContainer parameters)
+        {
+            var stringBuilder = new StringBuilder();
+            string str = "?";
+            for (int index = 0; index < parameters.Count; ++index)
+            {
+                stringBuilder.Append(str + parameters[index].Key + "=" + parameters[index].Value);
+                str = "&";
+            }
+            return new Uri(uri + stringBuilder.ToString());
+        }
+
+
+
+        private HttpContent ConvertToHttpContent(RequestParametersContainer container)
         {
             if (container == null) return null;
 
-            return new FormUrlEncodedContent(container);
+            if (!String.IsNullOrEmpty(container.JsonStringData))
+            {
+                if (String.IsNullOrEmpty(container.PropertyName))
+                {
+                    return new StringContent(container.JsonStringData);
+                }
+                else
+                {
+                    var json = new JObject();
+                    json.Add(container.PropertyName, container.JsonStringData);
+
+                    return new StringContent(json.ToString());
+                }
+            }
+
+            return new FormUrlEncodedContent((IEnumerable<KeyValuePair<string, string>>)container);
         }
-    }
 
 
-    internal enum EServerType
-    {
-        Backend, Api
-    }
 
-    public class ErrorCodes
-    {
-        public const string NETWORK_ERROR = "NETWORK_ERROR";
-        public const string SERVICE_ERROR = "SERVICE_ERROR";
-    }
 
-    public class ApiResponse
-    {
-        /// <summary>
-        /// response status
-        /// </summary>
-        public bool success { get; set; }
+        ////public async Task<string> Get(string command, HttpMethod method, Dictionary<string, string> dictionary = null, string deviceId = "11")
+        ////{
+        ////    var cc = new CookieContainer();
+        ////    var ch = new HttpClientHandler()
+        ////    {
+        ////        UseCookies = true,
+        ////        CookieContainer = cc,
+        ////        AllowAutoRedirect = true,
 
-        /// <summary>
-        /// error message
-        /// </summary>
-        public string message { get; set; }
+        ////        //sUseDefaultCredentials = false
+        ////    };
 
-        public bool IsSuccess
+        ////    //_httpClientHandler.CookieContainer.Add(new Uri(AppConstants.BaseApiUrl), new Cookie("name", "value", "/"));
+
+        ////    if (command.Contains("auth"))
+        ////    {
+
+        ////    }
+
+        ////    using (var client = new HttpClient(ch) { BaseAddress = new Uri(AppConstants.BaseApiUrl) })
+        ////    {
+        ////        AddHeaders(client);
+
+        ////        var dict = new Dictionary<string, string>();
+
+        ////        if (dictionary != null)
+        ////        {
+        ////            dict = dict.Union(dictionary).ToDictionary(k => k.Key, v => v.Value);
+        ////        }
+
+        ////        var sign = GetSign(dict);
+
+        ////        var request = command + "?"
+        ////             + string.Join("&", dict.Select(p => p.Key + '=' + p.Value).ToArray())
+        ////             + "&sign=" + sign;
+
+        ////        using (var message = new HttpRequestMessage(method, request))
+        ////        {
+        ////            using (var response = await client.SendAsync(message))
+        ////            {
+        ////                var responseStr = await response.Content.ReadAsStringAsync();
+
+        ////                Debug.WriteLine("RESPONSE:\r\r\n{0}\r\r\n", responseStr);
+
+        ////                var uri = new Uri(AppConstants.BaseApiUrl);
+
+        ////                IEnumerable<Cookie> responseCookies = ch.CookieContainer.GetCookies(uri).Cast<Cookie>();
+        ////                foreach (Cookie cookie in responseCookies)
+        ////                    Debug.WriteLine(cookie.Name + ": " + cookie.Value);
+
+        ////                IEnumerable<string> cookies;
+
+        ////                if (response.Headers.TryGetValues("Set-Cookie", out cookies))
+        ////                {
+        ////                    //foreach (var c in cookies)
+        ////                    //{
+        ////                    //    cookieContainer.SetCookies(pageUri, c);
+        ////                    //}
+        ////                }
+
+
+
+
+
+        ////                return responseStr;
+        ////            }
+        ////        }
+        ////    }
+        ////}
+
+
+        //private string GetSign(IEnumerable<KeyValuePair<string, string>> parameters)
+        //{
+        //    var s = string.Join("", parameters.Select(x => x.Key + "=" + x.Value)) + AppConstants.PrivateKey;
+
+        //    var md5 = CalculateMd5Hash(s);
+
+        //    return md5 + AppConstants.PublicKey;
+        //}
+
+        //private static string CalculateMd5Hash(string str)
+        //{
+        //    var alg = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Md5);
+        //    IBuffer buff = CryptographicBuffer.ConvertStringToBinary(str, BinaryStringEncoding.Utf8);
+        //    var hashed = alg.HashData(buff);
+        //    var res = CryptographicBuffer.EncodeToHexString(hashed);
+        //    return res;
+        //}
+
+        private void AddHeaders(HttpClient httpClient)
         {
-            get { return success; }
+            //httpClient.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
+
+            //httpClient.DefaultRequestHeaders.Add("Pragma", "no-cache");
         }
+
+        //private void AddCookies(HttpClientHandler handler)
+        //{
+        //    if (StateService.Instance.UserToken != null)
+        //    {
+        //        if (_cookieContainer == null)
+        //        {
+        //            _cookieContainer = new CookieContainer();
+        //        }
+
+        //        _cookieContainer.Add(new Uri(AppConstants.BaseApiUrl), new Cookie("token", StateService.Instance.UserToken.Token));
+        //        _cookieContainer.Add(new Uri(AppConstants.BaseApiUrl), new Cookie("uid", StateService.Instance.UserToken.Uid));
+
+        //        handler.CookieContainer = _cookieContainer;
+        //    }
+
+        //}
     }
 }

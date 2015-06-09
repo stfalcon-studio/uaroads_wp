@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UaRoadsWP.Base;
-
-namespace UaRoadsWP.Services
+﻿namespace UR.Core.WP81
 {
     public static class AppConstant
     {
@@ -14,9 +10,9 @@ namespace UaRoadsWP.Services
 
 
         /// <summary>
-        /// ms
+        /// ms  SENSOR_DELAY_36Hz = 27777;
         /// </summary>
-        public const int SensorUpdateInterval = 500;
+        public const int SensorUpdateInterval = 28;
 
         /// <summary>
         /// ms
@@ -24,5 +20,7 @@ namespace UaRoadsWP.Services
         public const int LocationUpdateInterval = 1000;
 
         public const string DataFolderName = "Tracks";
+
+        public const string BaseApiUrl = "http://api.uaroads.com/";
     }
 }

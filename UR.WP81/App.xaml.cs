@@ -20,7 +20,10 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Caliburn.Micro;
+using UR.Core.WP81.Services;
 using UR.WP81.ViewModels;
+using UR.WP81.Views;
+using SplashScreen = Windows.ApplicationModel.Activation.SplashScreen;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -83,35 +86,35 @@ namespace UR.WP81
         //    }
         //}
 
-//#if WINDOWS_PHONE_APP
-//        /// <summary>
-//        /// Handle OnActivated event to deal with File Open/Save continuation activation kinds
-//        /// </summary>
-//        /// <param name="e">Application activated event arguments, it can be casted to proper sub-type based on ActivationKind</param>
-//        protected async override void OnActivated(IActivatedEventArgs e)
-//        {
-//            base.OnActivated(e);
+        //#if WINDOWS_PHONE_APP
+        //        /// <summary>
+        //        /// Handle OnActivated event to deal with File Open/Save continuation activation kinds
+        //        /// </summary>
+        //        /// <param name="e">Application activated event arguments, it can be casted to proper sub-type based on ActivationKind</param>
+        //        protected async override void OnActivated(IActivatedEventArgs e)
+        //        {
+        //            base.OnActivated(e);
 
-//            _continuationManager = new ContinuationManager();
+        //            _continuationManager = new ContinuationManager();
 
-//            Frame rootFrame = CreateRootFrame();
-//            await RestoreStatusAsync(e.PreviousExecutionState);
+        //            Frame rootFrame = CreateRootFrame();
+        //            await RestoreStatusAsync(e.PreviousExecutionState);
 
-//            if (rootFrame.Content == null)
-//            {
-//                rootFrame.Navigate(typeof(LoginPage));
-//            }
+        //            if (rootFrame.Content == null)
+        //            {
+        //                rootFrame.Navigate(typeof(LoginPage));
+        //            }
 
-//            var continuationEventArgs = e as IContinuationActivatedEventArgs;
-//            if (continuationEventArgs != null)
-//            {
-//                // Call ContinuationManager to handle continuation activation
-//                _continuationManager.Continue(continuationEventArgs, rootFrame);
-//            }
+        //            var continuationEventArgs = e as IContinuationActivatedEventArgs;
+        //            if (continuationEventArgs != null)
+        //            {
+        //                // Call ContinuationManager to handle continuation activation
+        //                _continuationManager.Continue(continuationEventArgs, rootFrame);
+        //            }
 
-//            Window.Current.Activate();
-//        }
-//#endif
+        //            Window.Current.Activate();
+        //        }
+        //#endif
 
         protected async override void Configure()
         {
@@ -150,12 +153,14 @@ namespace UR.WP81
 
             _container.RegisterWinRTServices();
 
-            //_container.Singleton<IEventAggregator, EventAggregator>();
+            //_container.Singleton<TrackWriter>();
 
             //_container.RegisterSingleton(typeof(AppGlobalCommandHandler), "AppGlobalCommandHandler", typeof(AppGlobalCommandHandler));
 
             _container.PerRequest<SplashPageViewModel>();
             _container.PerRequest<MainPageViewModel>();
+
+            _container.PerRequest<TrackListPageViewModel>();
 
             //_container.PerRequest<IApplicationDataService, ApplicationDataService>();
             //_container.PerRequest<ISessionService, SessionService>();
@@ -269,8 +274,8 @@ namespace UR.WP81
 
 
             //DisplayRootView<SplashScreenPage>();
-            
-            //DisplayRootView<RegisterPage>();
+
+            DisplayRootView<MainPage>();
         }
 
 

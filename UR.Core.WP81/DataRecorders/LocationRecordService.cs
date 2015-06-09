@@ -1,53 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Device.Location;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
-using Microsoft.Devices.Sensors;
-using Microsoft.Xna.Framework;
-using UaRoadsWP.Models.Db;
-using Accelerometer = Microsoft.Devices.Sensors.Accelerometer;
-using AccelerometerReading = Microsoft.Devices.Sensors.AccelerometerReading;
+using UR.Core.WP81.Services;
 
-namespace UaRoadsWP.Services
+namespace UR.Core.WP81.DataRecorders
 {
     public class LocationRecordService
     {
-        private short _currentTrackId;
-        private List<DbTrackLocation> _locationCacheList;
+        //private short _currentTrackId;
+        //private List<DbTrackLocation> _locationCacheList;
 
-        private bool _accelStarted;
+        //private bool _accelStarted;
 
-        private Timer _timer;
+        //private Timer _timer;
 
-        private bool _isEnabled;
+        //private bool _isEnabled;
 
-
-        private GeoCoordinateWatcher _watcher;
+        private Geolocator _geolocator;
 
         public LocationRecordService()
         {
-            _isEnabled = false;
-            _locationCacheList = new List<DbTrackLocation>(AppConstant.LocationCacheCount);
+            //_isEnabled = false;
+            //_locationCacheList = new List<DbTrackLocation>(AppConstant.LocationCacheCount);
         }
 
 
         public void Start()
         {
-            _isEnabled = true;
-            
-            _currentTrackId = SettingsService.CurrentTrack.Value;
+            //_isEnabled = true;
 
-            _watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High);
+            //_currentTrackId = SettingsService.CurrentTrack.Value;
 
-            _watcher.PositionChanged += WatcherOnPositionChanged;
+            _geolocator = new Geolocator
+            {
+                DesiredAccuracy = PositionAccuracy.High,
+                DesiredAccuracyInMeters = 70,
+                MovementThreshold = 30,
+                //ReportInterval = 500
+            };
 
-            _watcher.StatusChanged += WatcherOnStatusChanged;
 
-            _watcher.Start();
+            _geolocator.StatusChanged += GeolocatorOnStatusChanged;
+
+            _geolocator.PositionChanged += GeolocatorOnPositionChanged;
+
+            //_geolocator.StatusChanged += GeolocatorOnStatusChanged;
+
+            //_geolocator.
+
+            //_geolocator.Start();
 
 
             //    if (!Accelerometer.IsSupported)
@@ -60,80 +65,83 @@ namespace UaRoadsWP.Services
         }
 
 
-        private async void TimerCallback(object state)
+        public void Stop()
         {
-            if (!_isEnabled) return;
 
-            var currentPosition = _watcher.Position;
-
-            _locationCacheList.Add(new DbTrackLocation()
+            if (_geolocator != null)
             {
-                TimeStamp = currentPosition.Timestamp,
-                TrackId = _currentTrackId,
-                Lattitude = currentPosition.Location.Latitude,
-                Longitude = currentPosition.Location.Longitude
-            });
+                _geolocator.StatusChanged -= GeolocatorOnStatusChanged;
 
-            if (_locationCacheList.Count == AppConstant.LocationCacheCount)
-            {
-                await FlushBuffer();
+                _geolocator.PositionChanged -= GeolocatorOnPositionChanged;
             }
+
+            _geolocator = null;
+        }
+
+        private void GeolocatorOnPositionChanged(Geolocator sender, PositionChangedEventArgs args)
+        {
+            RecordService.GetInstance().AddGpsPoint(args.Position);
+        }
+
+        private void GeolocatorOnStatusChanged(Geolocator sender, StatusChangedEventArgs args)
+        {
+            Debug.WriteLine("STATUS {0}", args.Status);
         }
 
 
-        private void WatcherOnPositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> args)
-        {
-            //Debug.WriteLine("geo {0}", args.Position.Location);
-        }
+        //private async void TimerCallback(object state)
+        //{
+        //    if (!_isEnabled) return;
 
-        private void WatcherOnStatusChanged(object sender, GeoPositionStatusChangedEventArgs args)
-        {
-            if (args.Status == GeoPositionStatus.Ready)
-            {
-                _timer = new Timer(TimerCallback, null, 0, AppConstant.LocationUpdateInterval);
-            }
+        //    var currentPosition = _geolocator.Position;
 
-            Debug.WriteLine("geo {0}", args.Status);
-        }
+        //    _locationCacheList.Add(new DbTrackLocation()
+        //    {
+        //        TimeStamp = currentPosition.Timestamp,
+        //        TrackId = _currentTrackId,
+        //        Lattitude = currentPosition.Location.Latitude,
+        //        Longitude = currentPosition.Location.Longitude
+        //    });
+
+        //    if (_locationCacheList.Count == AppConstant.LocationCacheCount)
+        //    {
+        //        await FlushBuffer();
+        //    }
+        //}
 
 
-        public async void Stop()
-        {
-            _isEnabled = false;
+        //private void GeolocatorOnPositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> args)
+        //{
+        //    //Debug.WriteLine("geo {0}", args.Position.Location);
+        //}
 
-            if (_timer != null)
-            {
-                _timer.Dispose();
-            }
+        //private void GeolocatorOnStatusChanged(object sender, GeoPositionStatusChangedEventArgs args)
+        //{
+        //    if (args.Status == GeoPositionStatus.Ready)
+        //    {
+        //        _timer = new Timer(TimerCallback, null, 0, AppConstant.LocationUpdateInterval);
+        //    }
 
-            await FlushBuffer();
+        //    Debug.WriteLine("geo {0}", args.Status);
+        //}
 
-            _currentTrackId = 0;
 
-            if (_watcher != null)
-            {
-                _watcher.PositionChanged -= WatcherOnPositionChanged;
-                _watcher.StatusChanged -= WatcherOnStatusChanged;
-                _watcher.Stop();
-                _watcher.Dispose();
-            }
-        }
 
-        private async Task FlushBuffer()
-        {
-            if (_locationCacheList != null)
-            {
-                if (_locationCacheList.Any())
-                {
-                    var recordsCurrent = _locationCacheList;
+        //private async Task FlushBuffer()
+        //{
+        //    if (_locationCacheList != null)
+        //    {
+        //        if (_locationCacheList.Any())
+        //        {
+        //            var recordsCurrent = _locationCacheList;
 
-                    _locationCacheList = new List<DbTrackLocation>(AppConstant.LocationCacheCount);
+        //            _locationCacheList = new List<DbTrackLocation>(AppConstant.LocationCacheCount);
 
-                    await new DbStorageService().TackLocationInsert(recordsCurrent);
+        //            await new DbStorageService().TackLocationInsert(recordsCurrent);
 
-                    recordsCurrent.Clear();
-                }
-            }
-        }
+        //            recordsCurrent.Clear();
+        //        }
+        //    }
+        //}
     }
 }

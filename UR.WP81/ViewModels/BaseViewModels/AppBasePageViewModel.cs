@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.ApplicationModel.Appointments;
 using Windows.ApplicationModel.Email;
 using Windows.ApplicationModel.Store;
 using Windows.Graphics.Display;
@@ -6,10 +7,11 @@ using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Caliburn.Micro;
+using Eve.Caliburn.WPA81;
 
 namespace UR.WP81.ViewModels.BaseViewModels
 {
-    public class AppBasePageViewModel : Screen
+    public class AppBasePageViewModel : CanBusyViewModel
     {
         public readonly INavigationService NavigationService;
 
@@ -39,7 +41,7 @@ namespace UR.WP81.ViewModels.BaseViewModels
             base.OnActivate();
         }
 
-     
+
 
         #region Props
 

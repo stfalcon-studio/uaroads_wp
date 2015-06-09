@@ -8,7 +8,7 @@ using UR.WP81.ViewModels.BaseViewModels;
 
 namespace UR.WP81.ViewModels
 {
-    class SplashPageViewModel : AppBasePageViewModel
+    public class SplashPageViewModel : AppBasePageViewModel
     {
         public SplashPageViewModel(INavigationService navigationService)
             : base(navigationService)

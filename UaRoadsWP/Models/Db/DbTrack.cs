@@ -26,31 +26,5 @@ namespace UaRoadsWP.Models.Db
     }
 
 
-    public enum ETrackStatus
-    {
-        /// <summary>
-        /// recording
-        /// </summary>
-        Started,
 
-        /// <summary>
-        /// recorded
-        /// </summary>
-        Finished,
-
-        /// <summary>
-        /// paused
-        /// </summary>
-        Paused,
-
-        /// <summary>
-        /// sended to server
-        /// </summary>
-        Sended,
-
-        /// <summary>
-        /// ready for sending to server
-        /// </summary>
-        ReadyToSend,
-    }
 }
