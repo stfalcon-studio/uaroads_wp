@@ -1,5 +1,103 @@
-﻿namespace UR.Core.WP81.DataRecorders
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+using System.Threading.Tasks;
+using UR.Core.WP81.Models;
+
+namespace UR.Core.WP81.Services
 {
+    public class TrackPreprocessing
+    {
+        public async Task ProcessAsync(Guid trackId)
+        {
+            try
+            {
+                Debug.WriteLine("begin process track {0}", trackId);
+                var track = await new TracksProvider().GetTrackAsync(trackId);
+
+                if (track.Status != ETrackStatus.Recorded)
+                {
+                    Debug.WriteLine("skip track {0} - status not recorded", trackId);
+                    return;
+                }
+
+                track.Status = ETrackStatus.Processing;
+
+                await new TracksProvider().SaveTrackAsync(track);
+                //todo send change status message
+
+
+
+                var outputFile = await new TracksProvider().GetTrackDataFile(trackId);
+
+                //gzip & base64
+
+
+                using (var fileStream = await outputFile.OpenStreamForWriteAsync())
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        using (var compressionStream = new GZipStream(ms, CompressionMode.Compress))
+                        {
+                            var dataFiles = await new TracksProvider().GetDataFilesAsync(trackId);
+
+                            foreach (var file in dataFiles)
+                            {
+                                Debug.WriteLine("write dataFile {0}", file.Name);
+                                using (var dataFileStream = await file.OpenStreamForReadAsync())
+                                {
+                                    CopyStream(dataFileStream, compressionStream);
+                                }
+                            }
+                        }
+
+                        var array = ms.ToArray();
+
+                        var res = Convert.ToBase64String(array);
+
+                        using (var writer = new StreamWriter(fileStream))
+                        {
+                            await writer.WriteAsync(res);
+                        }
+                    }
+                }
+
+                track.Status = ETrackStatus.Processed;
+
+                await new TracksProvider().SaveTrackAsync(track);
+
+                Debug.WriteLine("end processing track {0}", trackId);
+
+            }
+            catch (Exception err)
+            {
+                var track = await new TracksProvider().GetTrackAsync(trackId);
+                track.Status = ETrackStatus.Recorded;
+                await new TracksProvider().SaveTrackAsync(track);
+            }
+
+            //base64
+        }
+
+
+        public static void CopyStream(Stream input, Stream output)
+        {
+            byte[] buffer = new byte[32768];
+            long tempPos = input.Position;
+            while (true)
+            {
+                int read = input.Read(buffer, 0, buffer.Length);
+                if (read <= 0)
+                    return;
+                output.Write(buffer, 0, read);
+            }
+            input.Position = tempPos;// or you make Position = 0 to set it at the start
+        }
+    }
+
+
     //internal class TrackRawProcessing
     //{
     //    public TrackRawProcessing()
@@ -146,7 +244,7 @@
     //        await ConvertZipToBase64(tcs, track.TrackId);
 
 
-          
+
 
     //        await SentTrack(track.TrackId);
 
@@ -161,7 +259,7 @@
 
 
     //        var res = await new ApiClient().Add("___________________DEVICE_ID_", Guid.NewGuid(), trackData, Guid.NewGuid().ToString());
-    //        ApiResponseProcessor.Process(res);
+    //        ApiResponseProcessor.ProcessAsync(res);
     //    }
 
     //    private double GetTime(DateTimeOffset o)

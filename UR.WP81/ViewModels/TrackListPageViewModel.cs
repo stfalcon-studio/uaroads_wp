@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using UR.Core.WP81.API.Models;
+using UR.Core.WP81.DataRecorders;
 using UR.Core.WP81.Models;
 using UR.Core.WP81.Services;
 using UR.WP81.ViewModels.BaseViewModels;
@@ -45,10 +46,36 @@ namespace UR.WP81.ViewModels
             var tracks = await new TracksProvider().TracksAsync();
             IsBusyScreen = false;
 
+            TrackList.Clear();
+
             foreach (var track in tracks)
             {
                 TrackList.Add(track);
             }
+        }
+
+
+        public async void ProcessTracks()
+        {
+            var processor = new TrackPreprocessing();
+
+            foreach (var track in TrackList)
+            {
+                await processor.ProcessAsync(track.TrackId);
+            }
+
+            Load();
+        }
+        public async void SendTracks()
+        {
+            var processor = new TrackSender();
+
+            foreach (var track in TrackList)
+            {
+                await processor.SendAsync(track.TrackId);
+            }
+
+            Load();
         }
     }
 }

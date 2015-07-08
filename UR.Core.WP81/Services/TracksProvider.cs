@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.Search;
 using Newtonsoft.Json;
 using UR.Core.WP81.Models;
 
@@ -14,30 +15,14 @@ namespace UR.Core.WP81.Services
 {
     public class TracksProvider
     {
-        private const string DataDirectoryPath = "Routes_raw";
+        private const string DataDirectoryPath = "routes";
 
         private const string TrackHeaderFileName = "route.json";
 
-        private const string GpsTrackExtension = ".gps";
-        private const string AccelerometerTrackExtension = ".acc";
+        private const string GpsTrackFileExtension = "gps";
+        private const string AccelerometerTrackFileExtension = "acc";
+        private const string TrackDataResultFileExtension = "txt";
 
-        private async Task<StorageFolder> GetDataFolderAsync()
-        {
-            var folder = Windows.Storage.ApplicationData.Current.LocalFolder;
-
-            var res = await folder.CreateFolderAsync(DataDirectoryPath, CreationCollisionOption.OpenIfExists);
-
-            return res;
-        }
-
-        private async Task<StorageFolder> GetTrackFolderAsync(Guid id)
-        {
-            var folder = await GetDataFolderAsync();
-
-            var res = await folder.CreateFolderAsync(FileTrackHeader.GetName(id), CreationCollisionOption.OpenIfExists);
-
-            return res;
-        }
 
         public async Task<List<FileTrackHeader>> TracksAsync()
         {
@@ -82,7 +67,7 @@ namespace UR.Core.WP81.Services
             return resultList;
         }
 
-        public async Task SaveAsync(FileTrackHeader track)
+        public async Task SaveTrackAsync(FileTrackHeader track)
         {
             //var folder = await GetDataFolder();
 
@@ -98,13 +83,13 @@ namespace UR.Core.WP81.Services
             }
         }
 
-        public async Task<FileTrackHeader> TrackAsync(Guid id)
+        public async Task<FileTrackHeader> GetTrackAsync(Guid id)
         {
             var trackFolder = await GetTrackFolderAsync(id);
 
             //var strValue = JsonConvert.SerializeObject(track, Formatting.Indented);
 
-            var targetFile = await trackFolder.CreateFileAsync(FileTrackHeader.GetName(id), CreationCollisionOption.ReplaceExisting);
+            var targetFile = await trackFolder.CreateFileAsync(TrackHeaderFileName, CreationCollisionOption.OpenIfExists);
 
             using (var sw = new StreamReader(await targetFile.OpenStreamForReadAsync()))
             {
@@ -116,7 +101,7 @@ namespace UR.Core.WP81.Services
                         TrackId = id
                     };
 
-                    await SaveAsync(track);
+                    await SaveTrackAsync(track);
 
                     return track;
                 }
@@ -141,9 +126,51 @@ namespace UR.Core.WP81.Services
         }
 
 
-        public async Task WriteAsync(List<DataGeo> geo)
+        /// <summary>
+        /// return output file for track data
+        /// </summary>
+        /// <param name="trackId"></param>
+        /// <param name="open">3</param>
+        /// <returns></returns>
+        public async Task<StorageFile> GetTrackDataFile(Guid trackId)
         {
-            using (var sw = await GetOutputStreamAsync(true, StateService.Instance.CurrentTrack.TrackId))
+            var trackFolder = await GetTrackFolderAsync(trackId);
+
+            var fileName = GetFileName(trackId, FileType.Output);
+
+            return await trackFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+        }
+
+
+        public async Task<string> GetTrackDataAsync(Guid trackId)
+        {
+            var trackFolder = await GetTrackFolderAsync(trackId);
+
+            var fileName = GetFileName(trackId, FileType.Output);
+
+            var file = await trackFolder.CreateFileAsync(fileName, CreationCollisionOption.OpenIfExists);
+
+            using (var read = await file.OpenStreamForReadAsync())
+            {
+                using (var sr = new StreamReader(read))
+                {
+                    var str = await sr.ReadToEndAsync();
+
+                    return str;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// write small portion of data to new file
+        /// </summary>
+        /// <param name="geo"></param>
+        /// <param name="trackId"></param>
+        /// <returns></returns>
+        public async Task WriteToTrackAsync(List<DataGeo> geo, Guid trackId)
+        {
+            using (var sw = await GetWriteStreamAsync(FileType.GpsTrack, trackId))
             {
                 var sb = new StringBuilder();
 
@@ -162,9 +189,15 @@ namespace UR.Core.WP81.Services
             }
         }
 
-        public async Task WriteAsync(List<DataAccelerometer> accs)
+        /// <summary>
+        /// write small portion of data to new file
+        /// </summary>
+        /// <param name="accs"></param>
+        /// <param name="trackId"></param>
+        /// <returns></returns>
+        public async Task WriteToTrackAsync(List<DataAccelerometer> accs, Guid trackId)
         {
-            using (var sw = await GetOutputStreamAsync(false, StateService.Instance.CurrentTrack.TrackId))
+            using (var sw = await GetWriteStreamAsync(FileType.AccTrack, trackId))
             {
                 var sb = new StringBuilder();
 
@@ -183,21 +216,80 @@ namespace UR.Core.WP81.Services
         }
 
 
-        private async Task<StreamWriter> GetOutputStreamAsync(bool isForGpsTrack, Guid trackId)
+        private async Task<StorageFolder> GetDataFolderAsync()
+        {
+            var folder = Windows.Storage.ApplicationData.Current.LocalFolder;
+
+            var res = await folder.CreateFolderAsync(DataDirectoryPath, CreationCollisionOption.OpenIfExists);
+
+            return res;
+        }
+
+        private async Task<StorageFolder> GetTrackFolderAsync(Guid id)
+        {
+            var folder = await GetDataFolderAsync();
+
+            var res = await folder.CreateFolderAsync(FileTrackHeader.GetName(id), CreationCollisionOption.OpenIfExists);
+
+            return res;
+        }
+
+        private async Task<StreamWriter> GetWriteStreamAsync(FileType fType, Guid trackId)//bool isForGpsTrack
         {
             var trackFolder = await GetTrackFolderAsync(trackId);
 
-            var targetFile = await trackFolder.CreateFileAsync(GetFileName(Guid.NewGuid(), isForGpsTrack), CreationCollisionOption.ReplaceExisting);
+            // new guid for gps/acc files
+            // track id for track result file
+            var fileName = GetFileName(fType == FileType.Output ? trackId : Guid.NewGuid(), fType);
+
+            // multilply acc\gps files, only one for result
+            var targetFile = await trackFolder.CreateFileAsync(fileName, fType == FileType.Output ? CreationCollisionOption.ReplaceExisting : CreationCollisionOption.OpenIfExists);
 
             var sw = new StreamWriter(await targetFile.OpenStreamForWriteAsync());
 
             return sw;
         }
 
-        private string GetFileName(Guid id, bool isForGpsTrack)
+
+        public async Task<StorageFile[]> GetDataFilesAsync(Guid trackId)
         {
-            return String.Format("{0}{1}", FileTrackHeader.GetName(id),
-                isForGpsTrack ? GpsTrackExtension : AccelerometerTrackExtension);
+            var trackFolder = await GetTrackFolderAsync(trackId);
+
+            var resFilesRaw = await trackFolder.GetFilesAsync();
+
+            var files = resFilesRaw.Where(
+                x => x.Name.EndsWith(GpsTrackFileExtension) || x.Name.EndsWith(AccelerometerTrackFileExtension));
+
+            return files.ToArray();
+        }
+
+        private string GetFileName(Guid id, FileType fType)
+        {
+            var ext = string.Empty;
+
+            switch (fType)
+            {
+                case FileType.GpsTrack:
+                    ext = GpsTrackFileExtension;
+                    break;
+                case FileType.AccTrack:
+                    ext = AccelerometerTrackFileExtension;
+                    break;
+                case FileType.Output:
+                    ext = TrackDataResultFileExtension;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("fType");
+            }
+
+            return String.Format("{0}.{1}", FileTrackHeader.GetName(id), ext);
+        }
+
+        private enum FileType
+        {
+            GpsTrack,
+            AccTrack,
+            Output
         }
     }
 }

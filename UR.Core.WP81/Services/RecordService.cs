@@ -25,6 +25,8 @@ namespace UR.Core.WP81.Services
 
         public bool IsStarted { get; private set; }
 
+        private Guid _currentTrackId;
+
         public static RecordService GetInstance()
         {
             if (_instance == null)
@@ -37,8 +39,7 @@ namespace UR.Core.WP81.Services
 
         private RecordService()
         {
-            _geoList = new List<DataGeo>(GeoMaxElements + 20);
-            _accelerometerList = new List<DataAccelerometer>(AccMaxElements + 20);
+           
         }
 
 
@@ -48,11 +49,14 @@ namespace UR.Core.WP81.Services
         {
             IsStarted = true;
 
+            _geoList = new List<DataGeo>(GeoMaxElements + 20);
+            _accelerometerList = new List<DataAccelerometer>(AccMaxElements + 20);
+
             if (StateService.Instance.CurrentTrack == null)
             {
                 if (SettingsService.CurrentTrackId == Guid.Empty)
                 {
-                    var track = await new TracksProvider().TrackAsync(Guid.NewGuid());
+                    var track = await new TracksProvider().GetTrackAsync(Guid.NewGuid());
 
                     SettingsService.CurrentTrackId = track.TrackId;
 
@@ -60,7 +64,7 @@ namespace UR.Core.WP81.Services
                 }
                 else
                 {
-                    var track = await new TracksProvider().TrackAsync(SettingsService.CurrentTrackId);
+                    var track = await new TracksProvider().GetTrackAsync(SettingsService.CurrentTrackId);
 
                     StateService.Instance.CurrentTrack = track;
                 }
@@ -69,7 +73,7 @@ namespace UR.Core.WP81.Services
             {
                 if (StateService.Instance.CurrentTrack.TrackId != SettingsService.CurrentTrackId)
                 {
-                    var track = await new TracksProvider().TrackAsync(SettingsService.CurrentTrackId);
+                    var track = await new TracksProvider().GetTrackAsync(SettingsService.CurrentTrackId);
 
                     StateService.Instance.CurrentTrack = track;
                 }
@@ -78,12 +82,13 @@ namespace UR.Core.WP81.Services
 
             var cTrack = StateService.Instance.CurrentTrack;
 
-
-            cTrack.Status = ETrackStatus.Started;
+            cTrack.Status = ETrackStatus.Recording;
 
             cTrack.StartedDateTime = DateTime.Now;
 
-            await new TracksProvider().SaveAsync(cTrack);
+            _currentTrackId = cTrack.TrackId;
+
+            await new TracksProvider().SaveTrackAsync(cTrack);
 
             _locationRecordService = new LocationRecordService();
             _locationRecordService.Start();
@@ -91,7 +96,7 @@ namespace UR.Core.WP81.Services
             _accelerometerRecordService = new AccelerometerRecordService();
             _accelerometerRecordService.Start();
 
-            await Task.Delay(2000);
+            await Task.Delay(500);
 
             IoC.Get<IEventAggregator>().PublishOnUIThread(new DataHandlerStatusChanged(true));
         }
@@ -99,6 +104,8 @@ namespace UR.Core.WP81.Services
 
         public async Task StopAsync()
         {
+            IsStarted = false;
+
             if (_locationRecordService != null)
             {
                 _locationRecordService.Stop();
@@ -115,19 +122,19 @@ namespace UR.Core.WP81.Services
 
             var cTrack = StateService.Instance.CurrentTrack;
 
-            cTrack.Status = ETrackStatus.Finished;
+            cTrack.Status = ETrackStatus.Recorded;
 
             cTrack.FinishedDateTime = DateTime.Now;
 
-            await new TracksProvider().SaveAsync(cTrack);
+            await new TracksProvider().SaveTrackAsync(cTrack);
 
             StateService.Instance.CurrentTrack = null;
 
             SettingsService.CurrentTrackId = Guid.Empty;
 
-            await Task.Delay(2000);
+            _currentTrackId = Guid.Empty;
 
-            IsStarted = false;
+            await Task.Delay(500);
 
             IoC.Get<IEventAggregator>().PublishOnUIThread(new DataHandlerStatusChanged(false));
         }
@@ -184,7 +191,7 @@ namespace UR.Core.WP81.Services
 
                 _geoList = new List<DataGeo>(GeoMaxElements + 20);
 
-                await new TracksProvider().WriteAsync(tmp);
+                await new TracksProvider().WriteToTrackAsync(tmp, _currentTrackId);
             }
         }
 
@@ -204,15 +211,15 @@ namespace UR.Core.WP81.Services
 
                 _accelerometerList = new List<DataAccelerometer>(AccMaxElements + 20);
 
-                await new TracksProvider().WriteAsync(tmp);
+                await new TracksProvider().WriteToTrackAsync(tmp, _currentTrackId);
             }
         }
 
         private async Task FlushAsync()
         {
-            await new TracksProvider().WriteAsync(_accelerometerList);
+            await new TracksProvider().WriteToTrackAsync(_accelerometerList, _currentTrackId);
             _accelerometerList = null;
-            await new TracksProvider().WriteAsync(_geoList);
+            await new TracksProvider().WriteToTrackAsync(_geoList, _currentTrackId);
             _geoList = null;
         }
     }

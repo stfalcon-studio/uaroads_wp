@@ -82,12 +82,12 @@ namespace UR.Core.WP81.API
 
             //var ub = new Uri(new Uri(AppConstants.BaseApiUrl), url + "?" + query);
 
-            var ub = new Uri(new Uri(AppConstant.BaseApiUrl), url);
+            var ub = new Uri(url);
 
-            if (httpMethod == HttpMethod.Get)
-            {
-                ub = AttachParameters(ub, container);
-            }
+            //if (httpMethod == HttpMethod.Get)
+            //{
+            //    ub = AttachParameters(ub, container);
+            //}
 
 
             var message = new HttpRequestMessage(httpMethod, ub)

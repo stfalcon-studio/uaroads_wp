@@ -92,9 +92,10 @@
     <Compile Include="API\ApiResponses\LoginApiResponse.cs" />
     <Compile Include="API\RequestParametersContainer.cs" />
     <Compile Include="AppConstant.cs" />
-    <Compile Include="DataRecorders\AccelerometerRecordService.cs" />
-    <Compile Include="DataRecorders\LocationRecordService.cs" />
-    <Compile Include="DataRecorders\TrackRawProcessing.cs" />
+    <Compile Include="Services\DataRecorders\AccelerometerRecordService.cs" />
+    <Compile Include="Services\DataRecorders\LocationRecordService.cs" />
+    <Compile Include="Services\TrackSender.cs" />
+    <Compile Include="Services\TracksPreprocessing.cs" />
     <Compile Include="FileService.cs" />
     <Compile Include="LocationStarter.cs" />
     <Compile Include="Models\FileTrackHeader.cs" />
@@ -107,6 +108,10 @@
   <ItemGroup>
     <Reference Include="Caliburn.Micro">
       <HintPath>..\packages\Caliburn.Micro.Core.2.0.2\lib\portable-net45+win8+wp8+wpa81\Caliburn.Micro.dll</HintPath>
+    </Reference>
+    <Reference Include="Cimbalino.Toolkit.Core, Version=1.2.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cimbalino.Toolkit.Core.1.2.7\lib\wpa81\Cimbalino.Toolkit.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>

@@ -10,6 +10,10 @@
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid Margin="19 40 19 0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
         <ListView ItemsSource="{Binding TrackList}">
 
             <ListView.ItemContainerStyle>
@@ -33,5 +37,25 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button 
+                x:Name="ProcessTracks"
+                HorizontalAlignment="Center"
+                Content="process"></Button>
+
+            <Button Grid.Column="1"
+                x:Name="SendTracks"
+                HorizontalAlignment="Center"
+                Content="send"></Button>
+
+        </Grid>
+
+
     </Grid>
 </Page>

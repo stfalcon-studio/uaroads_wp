@@ -40,26 +40,41 @@ namespace UR.Core.WP81.Models
         /// <summary>
         /// recording
         /// </summary>
-        Started,
+        Recording = 0,
 
         /// <summary>
         /// recorded
         /// </summary>
-        Finished,
+        Recorded = 1,
 
         /// <summary>
         /// paused
         /// </summary>
-        Paused,
+        RecordPaused = 2,
 
         /// <summary>
-        /// sended to server
+        /// processe
         /// </summary>
-        Sended,
+        Processed = 3,
+
+        /// <summary>
+        /// processe
+        /// </summary>
+        Processing = 4,
+
+        /// <summary>
+        /// in sending
+        /// </summary>
+        Sending = 5,
 
         /// <summary>
         /// ready for sending to server
         /// </summary>
-        ReadyToSend,
+        Sent = 6,
+
+        /// <summary>
+        /// some error
+        /// </summary>
+        Error = 7,
     }
 }
