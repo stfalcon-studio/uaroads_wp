@@ -23,5 +23,16 @@ namespace UR.Core.WP81.Services
         }
 
         public FileTrackHeader CurrentTrack { get; set; }
+        public bool DeviceIsRegistred
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(SettingsService.DeviceId))
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
     }
 }

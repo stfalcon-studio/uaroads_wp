@@ -24,6 +24,12 @@ namespace UR.Core.WP81.Services
             set { _localSettings.SetSetting("UaRoads.CurrentTrackId", value); }
         }
 
+        public static string DeviceId
+        {
+            get { return _localSettings.GetSetting("UaRoads.DeviceId", String.Empty); }
+            set { _localSettings.SetSetting("UaRoads.DeviceId", value); }
+        }
+
         //public static AUser User
         //{
         //    get { return _localSettings.GetSetting("Megogo.User", (AUser)null); }

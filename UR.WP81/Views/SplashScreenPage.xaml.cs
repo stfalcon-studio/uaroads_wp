@@ -20,9 +20,9 @@ namespace UR.WP81.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SplashScreen : Page
+    public sealed partial class SplashScreenPage : Page
     {
-        public SplashScreen()
+        public SplashScreenPage()
         {
             this.InitializeComponent();
         }

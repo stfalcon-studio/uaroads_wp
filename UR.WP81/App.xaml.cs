@@ -140,7 +140,7 @@ namespace UR.WP81
 
 #if DEBUG
             //ApiClient.SetLogger(false);
-            //LogManager.GetLog = GetLog;
+            LogManager.GetLog = GetLog;
 #endif
 
             MessageBinder.SpecialValues.Add("$clickeditem", c => ((ItemClickEventArgs)c.EventArgs).ClickedItem);
@@ -157,7 +157,7 @@ namespace UR.WP81
 
             //_container.RegisterSingleton(typeof(AppGlobalCommandHandler), "AppGlobalCommandHandler", typeof(AppGlobalCommandHandler));
 
-            _container.PerRequest<SplashPageViewModel>();
+            _container.PerRequest<SplashScreenPageViewModel>();
             _container.PerRequest<MainPageViewModel>();
 
             _container.PerRequest<TrackListPageViewModel>();
@@ -275,7 +275,7 @@ namespace UR.WP81
 
             //DisplayRootView<SplashScreenPage>();
 
-            DisplayRootView<MainPage>();
+            DisplayRootView<Views.SplashScreenPage>();
         }
 
 

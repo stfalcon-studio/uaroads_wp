@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
+using UR.Core.WP81.API;
 using UR.Core.WP81.Models;
 
 namespace UR.Core.WP81.Services
@@ -30,13 +31,17 @@ namespace UR.Core.WP81.Services
 
                 var data = await new TracksProvider().GetTrackDataAsync(trackId);
 
-                //semd
-                track.Status = ETrackStatus.Sent;
+                var res = await ApiClient.Create().Add(trackId, data, track.Comment);
 
-                await new TracksProvider().SaveTrackAsync(track);
+                if (ApiResponseProcessor.Process(res))
+                {
+                    //semd
+                    track.Status = ETrackStatus.Sent;
 
-                Debug.WriteLine("end sending track {0}", trackId);
+                    await new TracksProvider().SaveTrackAsync(track);
 
+                    Debug.WriteLine("end sending track {0}", trackId);
+                }
             }
             catch (Exception err)
             {
