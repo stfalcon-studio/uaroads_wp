@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Caliburn.Micro;
+using UR.Core.WP81.API;
 using UR.Core.WP81.Services;
 using UR.WP81.ViewModels;
 using UR.WP81.Views;
@@ -139,7 +140,7 @@ namespace UR.WP81
 
 
 #if DEBUG
-            //ApiClient.SetLogger(false);
+            ApiClient.SetLogger(true);
             LogManager.GetLog = GetLog;
 #endif
 

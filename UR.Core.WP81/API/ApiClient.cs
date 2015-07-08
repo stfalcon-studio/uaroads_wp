@@ -46,7 +46,7 @@ namespace UR.Core.WP81.API
 
             _httpClient = new HttpClient(_httpClientHandler);
 
-            AddHeaders(_httpClient);
+            //AddHeaders(_httpClient);
         }
 
         public static ApiClient Create()
@@ -96,11 +96,18 @@ namespace UR.Core.WP81.API
 
             };
 
+            //message.Content 
+
+            AddHeaders(message);
+
             if (httpMethod == HttpMethod.Post)
             {
                 var query = await ConvertToHttpContent(container).ReadAsStringAsync();
 
+                query = WebUtility.UrlDecode(query);
+
                 message.Content = new StringContent(query);
+                message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
             }
 
 
@@ -176,6 +183,14 @@ namespace UR.Core.WP81.API
                     };
                 }
 
+                var content = await response.Content.ReadAsStringAsync();
+
+                return new T()
+                {
+                    StatusCode = response.StatusCode,
+                    ErrorMessage = content
+                };
+
 
                 //#if LOG_REQ
                 //                Debug.WriteLine("RESPONSE:\r\r\n{0}\r\r\n", s);
@@ -190,42 +205,9 @@ namespace UR.Core.WP81.API
                 //    return res;
                 //}
 
-                var apiresponse = JsonConvert.DeserializeObject<T>(s);
+                //var apiresponse = JsonConvert.DeserializeObject<T>(s);
 
-                var uri = new Uri(AppConstant.BaseApiUrl);
-
-                //get cookie values if only SS is empty
-                //if (StateService.Instance.UserToken == null)
-                //{
-                //    _cookieContainer = null; // delete static field with auth data. don't really need
-
-                //    var cookieCoollection = _httpClientHandler.CookieContainer.GetCookies(uri).Cast<Cookie>().ToList();
-
-                //    var c = cookieCoollection.FirstOrDefault(x => x.Name == "token");
-
-                //    if (c != null && !string.IsNullOrWhiteSpace(c.Value))
-                //    {
-                //        var token = c.Value;
-
-                //        var cuid = cookieCoollection.FirstOrDefault(x => x.Name == "uid");
-
-                //        if (cuid != null && !string.IsNullOrWhiteSpace(cuid.Value))
-                //        {
-                //            var uid = cuid.Value;
-
-                //            var resp = (AUserApiResponse)(ApiResponse)apiresponse;
-
-                //            resp.Token = token;
-                //            resp.Uid = uid;
-
-                //            //var ut = new UserToken();
-                //            //ut.Set(token, uid);
-                //            //StateService.Instance.UserToken = ut;
-                //        }
-                //    }
-                //}
-
-                return apiresponse;
+                //return apiresponse;
             }
             catch (Exception ex)
             {
@@ -374,8 +356,10 @@ namespace UR.Core.WP81.API
         //    return res;
         //}
 
-        private void AddHeaders(HttpClient httpClient)
+        private void AddHeaders(HttpRequestMessage httpClient)
         {
+            //httpClient.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+
             //httpClient.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
 
             //httpClient.DefaultRequestHeaders.Add("Pragma", "no-cache");

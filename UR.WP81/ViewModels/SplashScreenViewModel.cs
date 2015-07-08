@@ -26,10 +26,12 @@ namespace UR.WP81.ViewModels
 
                 var res = await ApiClient.Create().RegisterDevice("bondarenkod@windowslive.com", "phone", "wp81", guid);
 
-                SettingsService.DeviceId = guid;
+              
 
                 if (ApiResponseProcessor.Process(res))
                 {
+                    SettingsService.DeviceId = guid;
+
                     NavigationService.NavigateToViewModel<MainPageViewModel>();
                 }
 
