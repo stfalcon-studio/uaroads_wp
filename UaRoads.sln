@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UaRoadsWP", "UaRoadsWP\UaRoadsWP.csproj", "{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{23E033E4-441B-4071-AC3D-3AB45075571C}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -36,41 +34,6 @@ Global
 		Test|x86 = Test|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|ARM.ActiveCfg = Debug|ARM
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|ARM.Build.0 = Debug|ARM
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|ARM.Deploy.0 = Debug|ARM
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|Mixed Platforms.Deploy.0 = Debug|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|x86.ActiveCfg = Debug|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|x86.Build.0 = Debug|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Debug|x86.Deploy.0 = Debug|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|ARM.ActiveCfg = Release|ARM
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|ARM.Build.0 = Release|ARM
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|ARM.Deploy.0 = Release|ARM
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|Mixed Platforms.Build.0 = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|Mixed Platforms.Deploy.0 = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|x86.ActiveCfg = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|x86.Build.0 = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Release|x86.Deploy.0 = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|Any CPU.ActiveCfg = Release|Any CPU
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|Any CPU.Build.0 = Release|Any CPU
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|Any CPU.Deploy.0 = Release|Any CPU
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|ARM.ActiveCfg = Release|ARM
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|ARM.Build.0 = Release|ARM
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|ARM.Deploy.0 = Release|ARM
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|Mixed Platforms.ActiveCfg = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|Mixed Platforms.Build.0 = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|Mixed Platforms.Deploy.0 = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|x86.ActiveCfg = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|x86.Build.0 = Release|x86
-		{28EDAA8A-BA66-489A-B926-1DD8EA6FA36A}.Test|x86.Deploy.0 = Release|x86
 		{34BCF6BF-8361-4EFD-AD37-6E7AE5453E53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{34BCF6BF-8361-4EFD-AD37-6E7AE5453E53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34BCF6BF-8361-4EFD-AD37-6E7AE5453E53}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
