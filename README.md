@@ -1,4 +1,4 @@
-uaroads_wp
+UA ROADS
 ==========
 
-Windows Phone application for uaroads.com
+Windows Phone application for http://uaroads.com/
