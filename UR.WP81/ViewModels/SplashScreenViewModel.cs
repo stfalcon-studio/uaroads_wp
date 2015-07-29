@@ -22,11 +22,10 @@ namespace UR.WP81.ViewModels
             base.OnViewReady(view);
             if (!StateService.Instance.DeviceIsRegistred)
             {
-                var guid = Guid.NewGuid().ToString("N");
+                //var guid = Guid.NewGuid().ToString("N");
+                var guid = "91b24068cfe342748410f7836825fb1f";
 
                 var res = await ApiClient.Create().RegisterDevice("bondarenkod@windowslive.com", "phone", "wp81", guid);
-
-              
 
                 if (ApiResponseProcessor.Process(res))
                 {

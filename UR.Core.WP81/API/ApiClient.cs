@@ -102,12 +102,19 @@ namespace UR.Core.WP81.API
 
             if (httpMethod == HttpMethod.Post)
             {
-                var query = await ConvertToHttpContent(container).ReadAsStringAsync();
+                var content = ConvertToHttpContent(container);
+
+                var query = await content.ReadAsStringAsync();
 
                 query = WebUtility.UrlDecode(query);
 
-                message.Content = new StringContent(query);
-                message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                message.Content = content;
+
+                if (!container.HasBinaryContents())
+                {
+                    //new StringContent(query);
+                    message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                }
             }
 
 
@@ -259,6 +266,34 @@ namespace UR.Core.WP81.API
 
                     return new StringContent(json.ToString());
                 }
+            }
+
+            if (container.HasBinaryContents())
+            {
+                var binContent = new MultipartFormDataContent();
+
+                foreach (var keyValuePair in container)
+                {
+                    binContent.Add(new StringContent(keyValuePair.Value, new AsciiEncoding()), keyValuePair.Key);
+                }
+
+                var file = container.BinaryData.FirstOrDefault();
+
+                var fileContent = new ByteArrayContent(file.Value.Value);
+
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+                fileContent.Headers.Add("Content-Transfer-Encoding", "binary");
+
+                //http://www.iana.org/assignments/cont-disp/cont-disp.xhtml
+                fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+
+                binContent.Add(fileContent, file.Key, file.Value.Key);
+
+
+                return binContent;
+
+                //return new MultipartFormDataContent(); { (IEnumerable<KeyValuePair<string, string>>)container)};
             }
 
             return new FormUrlEncodedContent((IEnumerable<KeyValuePair<string, string>>)container);

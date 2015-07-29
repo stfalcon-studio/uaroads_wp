@@ -39,7 +39,7 @@ namespace UR.Core.WP81.Services
 
         private RecordService()
         {
-           
+
         }
 
 
@@ -87,6 +87,8 @@ namespace UR.Core.WP81.Services
             cTrack.StartedDateTime = DateTime.Now;
 
             _currentTrackId = cTrack.TrackId;
+
+            cTrack.Comment = DateTime.Now.ToString("U");
 
             await new TracksProvider().SaveTrackAsync(cTrack);
 

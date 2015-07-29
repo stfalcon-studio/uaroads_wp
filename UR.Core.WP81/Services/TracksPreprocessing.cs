@@ -34,6 +34,7 @@ namespace UR.Core.WP81.Services
 
                 //gzip & base64
 
+                string tmp = "";
 
                 using (var fileStream = await outputFile.OpenStreamForWriteAsync())
                 {
@@ -55,11 +56,41 @@ namespace UR.Core.WP81.Services
 
                         var array = ms.ToArray();
 
-                        var res = Convert.ToBase64String(array);
+                        tmp = Convert.ToBase64String(array);
+
+                        //var res = Convert.ToBase64String(array);
+                    }
+
+
+                    if (tmp.Length > 0)
+                    {
+                        var insertCount = 0;
+                        var lineCharsCount = 76;
+                        var insertPos = lineCharsCount;
+
+
+                        var sb = new StringBuilder(tmp.Length + (tmp.Length / lineCharsCount) * 2 + 50);
+
+                        sb.Insert(0, tmp);
+
+                        //var sbLength = sb.Length;
+
+                        while (true)
+                        {
+                            sb.Insert(insertPos, "\r\n");
+
+                            insertPos += 2 + lineCharsCount;
+
+                            insertCount++;
+
+                            if (insertPos >= sb.Length) break;
+                        }
+
+                        //var resstr = sb.ToString();
 
                         using (var writer = new StreamWriter(fileStream))
                         {
-                            await writer.WriteAsync(res);
+                            await writer.WriteAsync(sb.ToString());
                         }
                     }
                 }

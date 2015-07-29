@@ -31,7 +31,7 @@ namespace UR.Core.WP81.Services
 
                 var data = await new TracksProvider().GetTrackDataAsync(trackId);
 
-                var res = await ApiClient.Create().Add(trackId, data, track.Comment);
+                var res = await ApiClient.Create().Add(trackId, data, track.TrackName, track.Comment);
 
                 if (ApiResponseProcessor.Process(res))
                 {
