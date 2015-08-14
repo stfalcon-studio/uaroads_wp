@@ -274,7 +274,9 @@ namespace UR.Core.WP81.API
 
                 foreach (var keyValuePair in container)
                 {
-                    binContent.Add(new StringContent(keyValuePair.Value, new AsciiEncoding()), keyValuePair.Key);
+                    var strContent = new StringContent(keyValuePair.Value, new AsciiEncoding());
+                    strContent.Headers.Add("Content-Transfer-Encoding", "8bit");
+                    binContent.Add(strContent, keyValuePair.Key);
                 }
 
                 var file = container.BinaryData.FirstOrDefault();
@@ -287,6 +289,11 @@ namespace UR.Core.WP81.API
 
                 //http://www.iana.org/assignments/cont-disp/cont-disp.xhtml
                 fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+
+                fileContent.Headers.ContentDisposition.Parameters.Add(new NameValueHeaderValue("name", "data"));
+                fileContent.Headers.ContentDisposition.Parameters.Add(new NameValueHeaderValue("filename", $"{file.Value.Key}.txt"));
+
+                //Content - Disposition: form - data; name = "data"; filename = "1438144717732341208949.tmp"
 
                 binContent.Add(fileContent, file.Key, file.Value.Key);
 

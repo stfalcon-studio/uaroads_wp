@@ -18,11 +18,11 @@ namespace UR.Core.WP81.Services
                 Debug.WriteLine("begin sending track {0}", trackId);
                 var track = await new TracksProvider().GetTrackAsync(trackId);
 
-                if (track.Status != ETrackStatus.Processed)
-                {
-                    Debug.WriteLine("skip track {0} - status not Processed", trackId);
-                    return;
-                }
+                //if (track.Status != ETrackStatus.Processed)
+                //{
+                //    Debug.WriteLine("skip track {0} - status not Processed", trackId);
+                //    return;
+                //}
 
                 track.Status = ETrackStatus.Sending;
 
