@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
+using Cimbalino.Toolkit.Compression;
 using UR.Core.WP81.Models;
 
 namespace UR.Core.WP81.Services
@@ -17,11 +18,11 @@ namespace UR.Core.WP81.Services
                 Debug.WriteLine("begin process track {0}", trackId);
                 var track = await new TracksProvider().GetTrackAsync(trackId);
 
-                if (track.Status != ETrackStatus.Recorded)
-                {
-                    Debug.WriteLine("skip track {0} - status not recorded", trackId);
-                    return;
-                }
+                //if (track.Status != ETrackStatus.Recorded)
+                //{
+                //    Debug.WriteLine("skip track {0} - status not recorded", trackId);
+                //    return;
+                //}
 
                 track.Status = ETrackStatus.Processing;
 
@@ -55,36 +56,52 @@ namespace UR.Core.WP81.Services
                         }
 
                         var array = ms.ToArray();
+                        
+                        //hack to pass server header checking system :(
+                        array[8] = 0;
+                        //array[10] = 237;
+
+                        //var msin = new MemoryStream(array);
+                        //using (var decompress = new GZipStream(msin, CompressionMode.Decompress))
+                        //{
+                        //    var sr = new StreamReader(decompress);
+                        //    var s = await sr.ReadToEndAsync();
+                        //}
 
                         tmp = Convert.ToBase64String(array);
-
-                        //var res = Convert.ToBase64String(array);
                     }
+
+                    string delimeter = "\n";
 
 
                     if (tmp.Length > 0)
                     {
                         var insertCount = 0;
-                        var lineCharsCount = 76;
-                        var insertPos = lineCharsCount;
+                        var lineCharsCount = 77;
+                        var insertPos = lineCharsCount - 1;
 
 
                         var sb = new StringBuilder(tmp.Length + (tmp.Length / lineCharsCount) * 2 + 50);
 
                         sb.Insert(0, tmp);
 
+                        tmp = null;
+
                         //var sbLength = sb.Length;
 
                         while (true)
                         {
-                            sb.Insert(insertPos, "\r\n");
+                            sb.Insert(insertPos, delimeter);
 
-                            insertPos += 2 + lineCharsCount;
+                            insertPos += lineCharsCount;
 
                             insertCount++;
 
                             if (insertPos >= sb.Length) break;
                         }
+
+
+
 
                         //var resstr = sb.ToString();
 

@@ -176,11 +176,13 @@ namespace UR.Core.WP81.Services
 
                 foreach (var point in geo)
                 {
-                    //“1402477210710;47.9464569091797;37.6872901916504;cp#”
-                    sb.AppendFormat("{0};{1};{2};cp#",
+                    //time;0;long;lat;cp;accuracy;velocity
+                    sb.AppendFormat("{0};0;{1};{2};cp;{3};{4}\n",
                         point.TimeOffset.Ticks.ToString(CultureInfo.InvariantCulture),
+                        point.Longitude.ToString(CultureInfo.InvariantCulture),
                         point.Latitude.ToString(CultureInfo.InvariantCulture),
-                        point.Longitude.ToString(CultureInfo.InvariantCulture));
+                        0,
+                        0);
                 }
 
                 await sw.WriteAsync(sb.ToString());
@@ -203,8 +205,8 @@ namespace UR.Core.WP81.Services
 
                 foreach (var point in accs)
                 {
-                    //1402477210711;0.99;origin#
-                    sb.AppendFormat("{0};{1};origin#",
+                    //time;pit;0;0;cp;0;0
+                    sb.AppendFormat("{0};{1};0;0;origin;0;0\n",
                         point.TimeOffset.Ticks.ToString(CultureInfo.InvariantCulture),
                         point.Value.ToString(CultureInfo.InvariantCulture));
                 }

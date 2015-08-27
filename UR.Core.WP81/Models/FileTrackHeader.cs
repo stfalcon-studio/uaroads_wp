@@ -53,7 +53,7 @@ namespace UR.Core.WP81.Models
         RecordPaused = 2,
 
         /// <summary>
-        /// processe
+        /// processed
         /// </summary>
         Processed = 3,
 

@@ -1,0 +1,4 @@
+це originalMarks який ти відправляєш
+"originalMarks" : "H4sIAAAAAAAEAMWSOQ5CMRBDD0P/NfuifxwK9BtAXI+CI3EFInYkVxSQ8ike25Ocjyc2kghWoaCYed4dls2yXT0xMyXC3ggLDWw5dWhIVLCn6Kw5eY0jZiHVPK/3f5GAvEEGsDIxwkECsFGjIYZX5Ex6D59WrVxldQ3f1E7EI2t+ZP+ZAoTFHQI3Doc4GS45vdGHKzy7WB6VRqFq0nHxVknJuYcHDZv3Tt9IvAuYj62hh2/vfuELfVQeEU0DAAA=",
+
+Помилка "Wrong gzip data!",
