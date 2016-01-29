@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Eve.Core.WPA81;
+using Eve.Core;
 
 namespace UR.Core.WP81.Services
 {
@@ -28,6 +28,18 @@ namespace UR.Core.WP81.Services
         {
             get { return _localSettings.GetSetting("UaRoads.DeviceId", String.Empty); }
             set { _localSettings.SetSetting("UaRoads.DeviceId", value); }
+        }
+
+        public static string UserEmail
+        {
+            get { return _localSettings.GetSetting("UaRoads.UserEmail", String.Empty); }
+            set { _localSettings.SetSetting("UaRoads.UserEmail", value); }
+        }
+
+        public static string DeviceName
+        {
+            get { return _localSettings.GetSetting("UaRoads.DeviceName", String.Empty); }
+            set { _localSettings.SetSetting("UaRoads.DeviceName", value); }
         }
 
         //public static AUser User

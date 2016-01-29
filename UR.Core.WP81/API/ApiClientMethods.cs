@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Eve.Core.WPA81.Helpers;
+using Eve.Core.Helpers;
 using UR.Core.WP81.API.ApiResponses;
 using UR.Core.WP81.Services;
 
@@ -18,12 +18,10 @@ namespace UR.Core.WP81.API
         /// register device
         /// </summary>
         /// <param name="userEmail">user userEmail</param>
-        /// <param name="deviceOsName">OS name</param>
         /// <param name="deviceName">device name or device model</param>
-        /// <param name="deviceOsVersion">OS version</param>
         /// <param name="deviceUid">device UID</param>
         /// <returns></returns>
-        public async Task<ApiResponse> RegisterDevice(string userEmail, string deviceName, string deviceOsVersion, string deviceUid)
+        public async Task<ApiResponse> RegisterDevice(string userEmail, string deviceName, string deviceUid)
         {
 
             //+ email=email@here.com
@@ -36,8 +34,8 @@ namespace UR.Core.WP81.API
             {
                 { "email", userEmail },
                 { "os", "WP81" },
-                { "device_name", deviceName }, //todo promt user about it
-                { "os_version", ">=WP8.1" },
+                { "device_name", deviceName },
+                { "os_version", "WP8.1" },
                 { "app_ver", Package.Current.Id.Version.GetAsString() },
                 { "uid", deviceUid }
             };

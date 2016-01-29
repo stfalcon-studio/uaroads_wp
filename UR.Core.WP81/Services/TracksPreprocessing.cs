@@ -5,11 +5,11 @@ using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using Cimbalino.Toolkit.Compression;
-using UR.Core.WP81.Models;
+using UR.Core.WP81.Common;
 
 namespace UR.Core.WP81.Services
 {
-    public class TrackPreprocessing
+    public class TrackProcessor
     {
         public async Task ProcessAsync(Guid trackId)
         {
@@ -29,8 +29,6 @@ namespace UR.Core.WP81.Services
                 await new TracksProvider().SaveTrackAsync(track);
                 //todo send change status message
 
-
-
                 var outputFile = await new TracksProvider().GetTrackDataFile(trackId);
 
                 //gzip & base64
@@ -47,7 +45,7 @@ namespace UR.Core.WP81.Services
 
                             foreach (var file in dataFiles)
                             {
-                                Debug.WriteLine("write dataFile {0}", file.Name);
+                                Debug.WriteLine("read dataFile {0}", file.Name);
                                 using (var dataFileStream = await file.OpenStreamForReadAsync())
                                 {
                                     CopyStream(dataFileStream, compressionStream);
@@ -56,7 +54,7 @@ namespace UR.Core.WP81.Services
                         }
 
                         var array = ms.ToArray();
-                        
+
                         //hack to pass server header checking system :(
                         array[8] = 0;
                         //array[10] = 237;

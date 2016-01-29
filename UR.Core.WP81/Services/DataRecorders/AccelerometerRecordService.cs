@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Windows.Devices.Sensors;
-using UR.Core.WP81.Services;
 
-namespace UR.Core.WP81.DataRecorders
+namespace UR.Core.WP81.Services.DataRecorders
 {
     public class AccelerometerRecordService
     {
@@ -25,7 +21,7 @@ namespace UR.Core.WP81.DataRecorders
         //private List<DbTrackPit> _accelerometerReadings;
 
         //private bool _accelStarted;
-        
+
 
         public AccelerometerRecordService()
         {
@@ -34,10 +30,12 @@ namespace UR.Core.WP81.DataRecorders
             _maxValue = 0;
         }
 
-      
+
 
         public void Start()
         {
+            StateService.Instance.AccValue = 0;
+
             //if (!Accelerometer.IsSupported)
             //{
             //    Debug.WriteLine("SENSOR NOT SUPPORTED");
@@ -65,7 +63,7 @@ namespace UR.Core.WP81.DataRecorders
             }
         }
 
-        
+
         private void TimerCallback(object state)
         {
             RecordService.GetInstance().AddAccelerometerPoint(_offset, _maxValue);
@@ -79,20 +77,34 @@ namespace UR.Core.WP81.DataRecorders
 
         private void AccelSensorOnCurrentValueChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
         {
-            gX = args.Reading.AccelerationX / GravityEarth;
-            gY = args.Reading.AccelerationY / GravityEarth;
-            gZ = args.Reading.AccelerationZ / GravityEarth;
+            //gX = args.Reading.AccelerationX / GravityEarth;
+            //gY = args.Reading.AccelerationY / GravityEarth;
+            //gZ = args.Reading.AccelerationZ / GravityEarth;
 
             //// gForce will be close to 1 when there is no movement.
-            double accA = Math.Abs(Math.Sqrt(gX * gX + gY * gY + gZ * gZ) - 1);
+            //double accA = Math.Abs(Math.Sqrt(gX * gX + gY * gY + gZ * gZ) - 1);
 
-            if (accA > _maxValue)
+            //if (accA > _maxValue)
+            //{
+            //    _maxValue = accA;
+            //    _offset = DateTimeOffset.Now;
+            //}
+
+            double accX = args.Reading.AccelerationX;
+
+            double accY = args.Reading.AccelerationY;
+
+            double accZ = args.Reading.AccelerationZ;
+
+            double f = Math.Abs(Math.Sqrt(accX * accX + accY * accY + accZ * accZ) - 1);
+
+            if (f > _maxValue)
             {
-                _maxValue = accA;
+                _maxValue = f;
                 _offset = DateTimeOffset.Now;
-            }
 
-          
+                StateService.Instance.AccValue = f;
+            }
         }
 
 
@@ -120,6 +132,8 @@ namespace UR.Core.WP81.DataRecorders
 
                 _accelSensor = null;
             }
+
+            StateService.Instance.AccValue = null;
         }
 
         // private async void AccelSensorOnCurrentValueChanged(object sender, SensorReadingEventArgs<AccelerometerReading> args)

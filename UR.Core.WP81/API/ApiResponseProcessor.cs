@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
-using Eve.Core.WPA81.UI;
+using Eve.Core.UI;
 using UR.Core.WP81.API.ApiResponses;
 
 namespace UR.Core.WP81.API

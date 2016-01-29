@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="19913bondarenko.397361C7C2912" Publisher="CN=F4645743-95DA-46B7-A9DB-04C6D48ED251" Version="1.1.0.0" />
+  <Identity Name="19913bondarenko.397361C7C2912" Publisher="CN=F4645743-95DA-46B7-A9DB-04C6D48ED251" Version="2015.11.15.13" />
   <mp:PhoneIdentity PhoneProductId="fc49d0f4-bc62-4f44-b8f3-64f9221674ad" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Дороги України</DisplayName>
@@ -12,7 +12,8 @@
     <OSMaxVersionTested>6.3.1</OSMaxVersionTested>
   </Prerequisites>
   <Resources>
-    <Resource Language="x-generate" />
+    <Resource Language="uk" />
+    <!--<Resource Language="x-generate" />-->
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="UR.WP81.App">
@@ -20,6 +21,9 @@
         <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png">
         </m3:DefaultTile>
         <m3:SplashScreen Image="Assets\SplashScreen.png" />
+        <m3:InitialRotationPreference>
+          <m3:Rotation Preference="portrait" />
+        </m3:InitialRotationPreference>
       </m3:VisualElements>
     </Application>
   </Applications>

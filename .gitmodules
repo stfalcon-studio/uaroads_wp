@@ -1,0 +1,3 @@
+[submodule "Eve"]
+	path = Eve
+	url = https://github.com/bondarenkod/Eve.git

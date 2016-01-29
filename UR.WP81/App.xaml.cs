@@ -1,32 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Globalization;
+using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Caliburn.Micro;
+using Eve.Core.UI;
 using UR.Core.WP81.API;
 using UR.Core.WP81.Services;
 using UR.WP81.ViewModels;
 using UR.WP81.Views;
-using SplashScreen = Windows.ApplicationModel.Activation.SplashScreen;
-
-// The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
+using Microsoft.ApplicationInsights;
+using UR.Core.WP81.Common;
 
 namespace UR.WP81
 {
@@ -42,7 +33,17 @@ namespace UR.WP81
         public App()
         {
             //this.RequestedTheme = ApplicationTheme.Light;
+            WindowsAppInitializer.InitializeAsync();
+
             InitializeComponent();
+
+
+            Current.UnhandledException += CurrentOnUnhandledException;
+        }
+
+        private void CurrentOnUnhandledException(object sender, UnhandledExceptionEventArgs args)
+        {
+
         }
 
         private SplashScreen _argsSplashScreen;
@@ -144,15 +145,19 @@ namespace UR.WP81
             LogManager.GetLog = GetLog;
 #endif
 
+
             MessageBinder.SpecialValues.Add("$clickeditem", c => ((ItemClickEventArgs)c.EventArgs).ClickedItem);
             //MessageBinder.SpecialValues.Add(//"$clickeditem", c => ((ItemClickEventArgs)c.EventArgs).ClickedItem);
 
-            //EveWindow.Register();
-
+            EveWindow.Register();
 
             _container = new WinRTContainer();
 
             _container.RegisterWinRTServices();
+
+            _container.PerRequest<IDbTracksProvider, AppDatabase>();
+            _container.PerRequest<ITrackDataProvider, TrackDataDataProvider>();
+            _container.PerRequest<ITracksProvider, TracksProvider>();
 
             //_container.Singleton<TrackWriter>();
 
@@ -162,6 +167,12 @@ namespace UR.WP81
             _container.PerRequest<MainPageViewModel>();
 
             _container.PerRequest<TrackListPageViewModel>();
+            _container.PerRequest<LoginPageViewModel>();
+            _container.PerRequest<SettingsPageViewModel>();
+
+            var db = _container.GetInstance<IDbTracksProvider>();
+
+            await db.InitiliaseAsync();
 
             //_container.PerRequest<IApplicationDataService, ApplicationDataService>();
             //_container.PerRequest<ISessionService, SessionService>();
@@ -260,7 +271,14 @@ namespace UR.WP81
             //        .ShowAsync();
             //    App.Current.Exit();
             //});
-
+            try
+            {
+                var t = new EasClientDeviceInformation();
+                StateService.Instance.IsEmu = t.SystemSku == "Microsoft Virtual";
+            }
+            catch (Exception)
+            {
+            }
 
             // Other specific operations
             if (args.PreviousExecutionState == ApplicationExecutionState.Running)
@@ -276,53 +294,10 @@ namespace UR.WP81
 
             //DisplayRootView<SplashScreenPage>();
 
-            DisplayRootView<Views.SplashScreenPage>();
+            DisplayRootView<SplashScreenPage>();
         }
 
 
-        //private double _offSet = 0;
-        //private void OnHiding(InputPane s, InputPaneVisibilityEventArgs args)
-        //{
-        //    var transw = Window.Current.Content.RenderTransform;
-
-        //    if (EveWindow.IsAnyOpen())
-        //    {
-        //        var trans = new TranslateTransform();
-        //        trans.Y = 0;
-        //        //this.RenderTransform = trans;
-        //        EveWindow.TopOpened().RenderTransform = trans;
-        //        args.EnsuredFocusedElementInView = false;
-        //    }
-        //}
-
-        //private void OnShowing(InputPane s, InputPaneVisibilityEventArgs args)
-        //{
-        //    if (EveWindow.IsAnyOpen())
-        //    {
-
-
-        //        var focusedElement = (UIElement)FocusManager.GetFocusedElement();
-
-        //        var bounds = Window.Current.Bounds;
-
-        //        var ttv = focusedElement.TransformToVisual(Window.Current.Content);
-        //        Point screenCoords = ttv.TransformPoint(new Point(0, 0));
-
-        //        //_offSet = (int)args.OccludedRect.Height;
-
-        //        _offSet = screenCoords.Y; //bounds.Height - screenCoords.Y; //Math.Abs(screenCoords.Y - (int)args.OccludedRect.Height);
-
-
-        //        args.EnsuredFocusedElementInView = true;
-
-
-
-        //        var trans = new TranslateTransform();
-        //        trans.Y = -_offSet;
-        //        //this.RenderTransform = trans;
-        //        EveWindow.TopOpened().RenderTransform = trans;
-        //    }
-        //}
 
         /*
 

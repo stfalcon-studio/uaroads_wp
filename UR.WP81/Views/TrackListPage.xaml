@@ -1,61 +1,134 @@
 ﻿<Page x:Class="UR.WP81.Views.TrackListPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:UR.WP81.Views"
+      xmlns:controls="using:UR.WP81.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="using:UR.WP81.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:viewModels="using:UR.WP81.ViewModels"
-      mc:Ignorable="d"
-      d:DataContext="{d:DesignInstance Type=viewModels:TrackListPageViewModel, IsDesignTimeCreatable=False}"
-      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      FontSize="25"
+      d:DataContext="{d:DesignInstance Type=viewModels:TrackListPageViewModel,
+                                       IsDesignTimeCreatable=False}"
+      mc:Ignorable="d">
 
-    <Grid Margin="19 40 19 0">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ListView ItemsSource="{Binding TrackList}">
+        <controls:AppHeader Header="мої треки" />
 
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment"
-                            Value="Stretch" />
-                </Style>
-            </ListView.ItemContainerStyle>
+        <Grid Grid.Row="1" Margin="19 10 19 0">
 
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Margin="0 0 0 20"
-                                Background="#20FFffff"
-                                HorizontalAlignment="Stretch">
-                        <TextBlock Text="{Binding TrackId}" />
-                        <TextBlock Text="{Binding Status}" />
-                        <TextBlock Text="{Binding Comment}" />
-                        <TextBlock Text="{Binding StartedDateTime}" />
-                        <TextBlock Text="{Binding FinishedDateTime}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            <ListView Footer="1" ItemsSource="{Binding TrackList}">
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
 
-            <Button 
-                x:Name="ProcessTracks"
-                HorizontalAlignment="Center"
-                Content="process"></Button>
+                <ListView.FooterTemplate>
+                    <DataTemplate>
+                        <Grid Height="50"></Grid></DataTemplate>
+                </ListView.FooterTemplate>
 
-            <Button Grid.Column="1"
-                x:Name="SendTracks"
-                HorizontalAlignment="Center"
-                Content="send"></Button>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0 0 0 12"
+                              HorizontalAlignment="Stretch"
+                              Background="#20FFffff">
+
+                            <StackPanel Margin="0 3 3 3">
+
+                                <TextBlock FontSize="24" Text="{Binding StartedDateTime}" />
+                                <!--<TextBlock Text="{Binding TrackId}" />-->
+                                <StackPanel Orientation="Horizontal">
+
+                                    <TextBlock Margin="0 0 20 0"
+                                               FontSize="16"
+                                               Opacity="0.7"
+                                               Text="{Binding TrackLengthStr}" />
+
+
+                                    <TextBlock FontSize="16"
+                                               Opacity="0.7"
+                                               Text="{Binding TrackDurationStr}" />
+
+                                </StackPanel>
+                                <TextBlock FontSize="16"
+                                           Opacity="0.7"
+                                           Text="{Binding Status,
+                                                          Converter={StaticResource LocConverter}}" />
+
+                            </StackPanel>
+                            <!--<TextBlock Text="{Binding Comment}" />
+
+                            <TextBlock Text="{Binding FinishedDateTime}" />-->
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
         </Grid>
-
-
     </Grid>
+
+
+
+    <Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Compact" IsSticky="False">
+
+            <CommandBar.PrimaryCommands>
+
+                <AppBarButton x:Name="AppBtnProcess"
+                              IsCompact="False"
+                              IsEnabled="{Binding IsBusy,
+                                                  Converter={StaticResource CBoolNotBool}}"
+                              Label="відправити">
+
+                    <AppBarButton.Icon>
+                        <SymbolIcon Symbol="Send" />
+                    </AppBarButton.Icon>
+                    <!--<AppBarButton.Icon>
+                        <BitmapIcon UriSource="../../Assets/Icons/appBar/like.png" />
+                    </AppBarButton.Icon>-->
+                </AppBarButton>
+
+
+                <!--<AppBarButton IsCompact="False"
+                              Label="відправити"
+                               IsEnabled="{Binding IsBusy, Converter={StaticResource CBoolNotBool}}"
+                              x:Name="AppBtnSendTracks">
+
+                    <AppBarButton.Icon>
+                        <SymbolIcon Symbol="List"></SymbolIcon>
+                    </AppBarButton.Icon>
+
+                </AppBarButton>-->
+
+
+            </CommandBar.PrimaryCommands>
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="AppBtnMenuSettingsButton"
+                              IsEnabled="{Binding IsBusy,
+                                                  Converter={StaticResource CBoolNotBool}}"
+                              Label="налаштування" />
+
+                <AppBarButton x:Name="AppBtnMenuDeleteEverything"
+                              IsEnabled="{Binding IsBusy,
+                                                  Converter={StaticResource CBoolNotBool}}"
+                              Label="видалити всі треки" />
+
+                <AppBarButton x:Name="AppBtnMenuFeedback"
+                              IsEnabled="{Binding IsBusy,
+                                                  Converter={StaticResource CBoolNotBool}}"
+                              Label="зворотній зв'язок" />
+            </CommandBar.SecondaryCommands>
+
+
+
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

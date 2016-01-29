@@ -5,22 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using Microsoft.ApplicationInsights;
 using UR.Core.WP81.API.Models;
-using UR.Core.WP81.DataRecorders;
-using UR.Core.WP81.Models;
+using UR.Core.WP81.Common;
 using UR.Core.WP81.Services;
+using UR.WP81.Common;
 using UR.WP81.ViewModels.BaseViewModels;
 
 namespace UR.WP81.ViewModels
 {
-    public class TrackListPageViewModel : AppBasePageViewModel//, IHandle<DataHandlerStatusChanged>
+    public class TrackListPageViewModel : AppBasePageViewModel//, IHandle<MsgDataHandlerStatusChanged>
     {
-        public ObservableCollection<FileTrackHeader> TrackList { get; set; }
+        public ObservableCollection<ATrack> TrackList { get; set; }
 
         public TrackListPageViewModel(INavigationService navigationService)
             : base(navigationService)
         {
-            TrackList = new ObservableCollection<FileTrackHeader>();
+            TrackList = new ObservableCollection<ATrack>();
         }
 
         protected override void OnViewReady(object view)
@@ -31,8 +32,6 @@ namespace UR.WP81.ViewModels
             Load();
         }
 
-
-
         protected override void OnDeactivate(bool close)
         {
             base.OnDeactivate(close);
@@ -42,9 +41,9 @@ namespace UR.WP81.ViewModels
 
         private async void Load()
         {
-            IsBusyScreen = true;
-            var tracks = await new TracksProvider().TracksAsync();
-            IsBusyScreen = false;
+            IsBusyStatusBar = true;
+            var tracks = await IoC.Get<ITracksProvider>().GetTracksAsync();
+            IsBusyStatusBar = false;
 
             TrackList.Clear();
 
@@ -54,28 +53,65 @@ namespace UR.WP81.ViewModels
             }
         }
 
-
-        public async void ProcessTracks()
+        public async void AppBtnProcess()
         {
-            var processor = new TrackPreprocessing();
+            if (IsBusy) return;
 
-            foreach (var track in TrackList)
+            if (!StateService.Instance.DeviceIsRegistred)
             {
-                await processor.ProcessAsync(track.TrackId);
+                NavigationService.ToLoginPage(true);
+                return;
             }
 
-            Load();
+            IsBusyStatusBar = true;
+
+            try
+            {
+                foreach (var track in TrackList)
+                {
+                    await new TrackProcessor().ProcessAsync(track.Id);
+                    await new TrackSender().SendAsync(track.Id);
+                    new TelemetryClient().TrackEvent("TRACKSENT", new Dictionary<string, string>
+                    {
+                        { "TrackID", track.Id.ToString("N") },
+                        { "TrackLength", track.TrackLength.ToString() },
+                        { "TrackAvgSpeed", track.TrackAvgSpeed.ToString() },
+                        { "TrackPitPointsCount", track.PitPointsCount.ToString() },
+                        { "TrackLocationPointsCount", track.LocationPointsCount.ToString() },
+                    });
+                }
+            }
+            catch (Exception err)
+            {
+                new TelemetryClient().TrackException(err);
+            }
+            finally
+            {
+                Load();
+                IsBusyStatusBar = false;
+            }
         }
-        public async void SendTracks()
+
+
+        public async void AppBtnMenuDeleteEverything()
         {
-            var processor = new TrackSender();
+            if (IsBusy) return;
 
-            foreach (var track in TrackList)
+            IsBusyStatusBar = true;
+            try
             {
-                await processor.SendAsync(track.TrackId);
+                await IoC.Get<ITracksProvider>().DeleteTracksAsync();
             }
+            catch (Exception)
+            {
 
-            Load();
+                throw;
+            }
+            finally
+            {
+                Load();
+                IsBusyStatusBar = false;
+            }
         }
     }
 }

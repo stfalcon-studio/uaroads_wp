@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using Eve.Caliburn;
 using UR.Core.WP81.API;
 using UR.Core.WP81.Services;
 using UR.WP81.ViewModels.BaseViewModels;
@@ -20,25 +21,28 @@ namespace UR.WP81.ViewModels
         protected async override void OnViewReady(object view)
         {
             base.OnViewReady(view);
-            if (!StateService.Instance.DeviceIsRegistred)
-            {
-                //var guid = Guid.NewGuid().ToString("N");
-                var guid = "91b24068cfe342748410f7836825fb1f";
 
-                var res = await ApiClient.Create().RegisterDevice("bondarenkod@windowslive.com", "phone", "wp81", guid);
+            StateService.Instance.Init();
 
-                if (ApiResponseProcessor.Process(res))
-                {
-                    SettingsService.DeviceId = guid;
+            //if (!StateService.Instance.DeviceIsRegistred)
+            //{
+            //    //var guid = Guid.NewGuid().ToString("N");
+            //    var guid = "91b24068cfe342748410f7836825fb1f";
 
-                    NavigationService.NavigateToViewModel<MainPageViewModel>();
-                }
+            //var res = await ApiClient.Create().RegisterDevice("bondarenkod@windowslive.com", "phone", "wp81", guid);
 
-            }
-            else
-            {
-                NavigationService.NavigateToViewModel<MainPageViewModel>();
-            }
+            //    if (ApiResponseProcessor.Process(res))
+            //    {
+            //        SettingsService.DeviceId = guid;
+
+            //        NavigationService.NavigateToViewModel<MainPageViewModel>();
+            //    }
+
+            //}
+            //else
+            //{
+            NavigationService.CleanNavigationStackAfter().NavigateToViewModel<MainPageViewModel>();
+            //}
         }
     }
 }
