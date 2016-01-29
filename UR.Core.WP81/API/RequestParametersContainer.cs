@@ -62,7 +62,7 @@ namespace UR.Core.WP81.API
             }
         }
 
-        public void Add(object key, string fileName, byte[] data)
+        public void Add(string key, string fileName, byte[] data)
         {
             _binaryData.Add(key.ToString(), new KeyValuePair<string, byte[]>(fileName, data));
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml;
-using Eve.Core.WPA81.UI;
+using Eve.Core.UI;
 using UR.Core.WP81.API.ApiResponses;
 
 namespace UR.Core.WP81.API
@@ -87,15 +87,15 @@ namespace UR.Core.WP81.API
             else
             {
                 var errorMessage = response.ErrorMessage;
-                if (response.Errors != null)
-                {
-                    errorMessage += "\r\n";
+                //if (response.Errors != null)
+                //{
+                //    errorMessage += "\r\n";
 
-                    foreach (var error in response.Errors)
-                    {
-                        errorMessage += error.ErrorMessage + "\r\n";
-                    }
-                }
+                //    foreach (var error in response.Errors)
+                //    {
+                //        errorMessage += error.ErrorMessage + "\r\n";
+                //    }
+                //}
 
                 errorMessage = errorMessage.Trim();
 

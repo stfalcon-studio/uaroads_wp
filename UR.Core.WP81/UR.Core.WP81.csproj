@@ -87,30 +87,53 @@
     <Compile Include="API\ApiResponses\ApiResponse.cs" />
     <Compile Include="API\Generic\RequestParametersContainer.cs" />
     <Compile Include="API\Models\ERoutePointType.cs" />
-    <Compile Include="API\Models\Messages.cs" />
+    <Compile Include="Common\AppDatabase.cs" />
+    <Compile Include="Common\Haversine.cs" />
+    <Compile Include="Common\Messages.cs" />
     <Compile Include="API\Models\RoutePoint.cs" />
     <Compile Include="API\ApiResponses\LoginApiResponse.cs" />
     <Compile Include="API\RequestParametersContainer.cs" />
     <Compile Include="AppConstant.cs" />
+    <Compile Include="Common\EGlobalState.cs" />
+    <Compile Include="Common\ETrackStatus.cs" />
     <Compile Include="Services\DataRecorders\AccelerometerRecordService.cs" />
     <Compile Include="Services\DataRecorders\LocationRecordService.cs" />
     <Compile Include="Services\TrackSender.cs" />
-    <Compile Include="Services\TracksPreprocessing.cs" />
+    <Compile Include="Services\TrackProcessor.cs" />
     <Compile Include="FileService.cs" />
     <Compile Include="LocationStarter.cs" />
-    <Compile Include="Models\FileTrackHeader.cs" />
+    <Compile Include="Common\ATrack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\RecordService.cs" />
     <Compile Include="Services\StateService.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\TracksProvider.cs" />
+    <Compile Include="SQLite.cs" />
+    <Compile Include="SQLiteAsync.cs" />
+    <Compile Include="Test\TestConverter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.1.1\lib\wpa81\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Caliburn.Micro">
       <HintPath>..\packages\Caliburn.Micro.Core.2.0.2\lib\portable-net45+win8+wp8+wpa81\Caliburn.Micro.dll</HintPath>
     </Reference>
     <Reference Include="Cimbalino.Toolkit.Core, Version=1.2.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Cimbalino.Toolkit.Core.1.2.7\lib\wpa81\Cimbalino.Toolkit.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=1.1.0.1899, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.1.1.0\lib\portable-win81+wpa81\Microsoft.ApplicationInsights.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights.Extensibility.Windows, Version=1.1.0.1906, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.WindowsApps.1.1.0\lib\wpa81\Microsoft.ApplicationInsights.Extensibility.Windows.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights.PersistenceChannel, Version=1.1.0.1903, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PersistenceChannel.1.1.0\lib\portable-win81+wpa81\Microsoft.ApplicationInsights.PersistenceChannel.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
@@ -127,8 +150,20 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\devrain\MegogoGit\Eve.Core.WPA81\Eve.Core.WPA81.csproj">
-      <Project>{6808E11E-2C69-4DB1-B70E-05AA5671EFE2}</Project>
+    <SDKReference Include="Microsoft.VCLibs, version=12.0">
+      <Name>Microsoft Visual C++ 2013 Runtime Package for Windows Phone</Name>
+    </SDKReference>
+    <SDKReference Include="SQLite.WP81, Version=3.9.2">
+      <Name>SQLite for Windows Phone 8.1</Name>
+    </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Eve\Eve.Caliburn.WPA81\Eve.Caliburn.WPA81.csproj">
+      <Project>{3a97ec7e-69d1-4221-b4cf-41619e7c1d4e}</Project>
+      <Name>Eve.Caliburn.WPA81</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Eve\Eve.Core.WPA81\Eve.Core.WPA81.csproj">
+      <Project>{28cd909f-3ec2-4e87-8b86-2f2f55535c36}</Project>
       <Name>Eve.Core.WPA81</Name>
     </ProjectReference>
   </ItemGroup>
@@ -139,18 +174,6 @@
     <TargetPlatformIdentifier>WindowsPhoneApp</TargetPlatformIdentifier>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
-  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
-  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
-    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
-    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

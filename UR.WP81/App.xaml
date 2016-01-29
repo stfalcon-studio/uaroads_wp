@@ -2,32 +2,35 @@
                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:cm="using:Caliburn.Micro"
-                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                        mc:Ignorable="d"
-                        RequestedTheme="Dark"
-                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:common="using:UR.WP81.Common"
+                        xmlns:converters="using:Eve.Core.WPA81.Converters"
                         xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                         xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-                        xmlns:converters="using:Eve.Core.WPA81.Converters">
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:converters1="using:Eve.Core.Converters"
+                        RequestedTheme="Dark"
+                        mc:Ignorable="d">
 
     <Application.Resources>
         <!--<vm:ViewModelLocator x:Key="Locator"
                              xmlns:vm="using:Megogo.ViewModel" />-->
-     
+
         <ResourceDictionary>
 
-            <converters:CBoolNotBool x:Key="CBoolNotBool" />
-            <converters:CBoolNotOpacity x:Key="CBoolNotOpacity" />
-            <converters:CBoolOpacity x:Key="CBoolOpacity" />
+            <converters1:CBoolNotBool x:Key="CBoolNotBool" />
+            <converters1:CBoolNotOpacity x:Key="CBoolNotOpacity" />
+            <converters1:CBoolOpacity x:Key="CBoolOpacity" />
 
 
-            <converters:EmptyNullTextToVisibilityConverter x:Key="EmptyNullTextToVisibilityConverter" />
-            <converters:EmptyListVisibilityConverter x:Key="EmptyListVisibilityConverter" />
-            <converters:ToLowerTextConverter x:Key="ToLowerTextConverter" />
-            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <converters:BooleanToOppositeVisibilityConverter x:Key="BooleanToOppositeVisibilityConverter" />
-            <converters:ToUpperTextConverter x:Key="ToUpperTextConverter" />
-            <converters:IntToOppositeVisibilityConverter x:Key="IntToOppositeVisibilityConverter" />
+            <converters1:EmptyNullTextToVisibilityConverter x:Key="EmptyNullTextToVisibilityConverter" />
+            <converters1:EmptyListVisibilityConverter x:Key="EmptyListVisibilityConverter" />
+            <converters1:ToLowerTextConverter x:Key="ToLowerTextConverter" />
+            <converters1:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters1:BooleanToOppositeVisibilityConverter x:Key="BooleanToOppositeVisibilityConverter" />
+            <converters1:ToUpperTextConverter x:Key="ToUpperTextConverter" />
+            <converters1:IntToOppositeVisibilityConverter x:Key="IntToOppositeVisibilityConverter" />
+            <common:LocConverter x:Key="LocConverter" />
 
             <ResourceDictionary.MergedDictionaries>
 
@@ -48,14 +51,14 @@
 </cm:CaliburnApplication>
 
 
-<!--<Application x:Class="Megogo.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             xmlns:i="using:Microsoft.Xaml.Interactivity" 
-             xmlns:core="using:Microsoft.Xaml.Interactions.Core" 
-             xmlns:viewModel="using:Megogo.ViewModel" 
+<!--<Application x:Class="Megogo.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:i="using:Microsoft.Xaml.Interactivity"
+             xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+             xmlns:viewModel="using:Megogo.ViewModel"
              xmlns:converters="using:Megogo.Converters"
              xmlns:controls="using:Q42.WinRT.Controls">
-    
+
 </Application>-->
 
 
@@ -76,17 +79,17 @@
 
 
 
-<!--<Application x:Class="Megogo.App" 
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             xmlns:i="using:Microsoft.Xaml.Interactivity" 
-             xmlns:core="using:Microsoft.Xaml.Interactions.Core" 
-             xmlns:converters="using:Megogo.Converters" 
-             xmlns:controls="using:Q42.WinRT.Controls" 
+<!--<Application x:Class="Megogo.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:i="using:Microsoft.Xaml.Interactivity"
+             xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+             xmlns:converters="using:Megogo.Converters"
+             xmlns:controls="using:Q42.WinRT.Controls"
         >
-  
 
-    
+
+
     </Application>-->
 
 <!--<Application

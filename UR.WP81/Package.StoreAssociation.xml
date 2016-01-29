@@ -188,10 +188,12 @@
     <ReservedNames>
       <ReservedName>Дороги України</ReservedName>
       <ReservedName>UA Roads</ReservedName>
+      <ReservedName>Дороги Украины</ReservedName>
     </ReservedNames>
   </ProductReservedInfo>
   <AccountPackageIdentityNames>
     <MainPackageIdentityName>19913bondarenko.test12345676</MainPackageIdentityName>
+    <MainPackageIdentityName>19913bondarenko.24053A0E8EE0C</MainPackageIdentityName>
   </AccountPackageIdentityNames>
-  <PackageInfoList LandingUrl="https://dev.windowsphone.com/AppSubmission/AssociationLanding?windowsProductId=c6486284-ea34-4b9f-a20c-30d43498cd09" />
+  <PackageInfoList LandingUrl="https://dev.windows.com/dashboard/Application?appId=9NBLGGH2SXPJ" />
 </StoreAssociation>

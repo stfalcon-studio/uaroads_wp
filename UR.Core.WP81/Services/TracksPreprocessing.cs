@@ -4,11 +4,12 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
-using UR.Core.WP81.Models;
+using Cimbalino.Toolkit.Compression;
+using UR.Core.WP81.Common;
 
 namespace UR.Core.WP81.Services
 {
-    public class TrackPreprocessing
+    public class TrackProcessor
     {
         public async Task ProcessAsync(Guid trackId)
         {
@@ -17,23 +18,22 @@ namespace UR.Core.WP81.Services
                 Debug.WriteLine("begin process track {0}", trackId);
                 var track = await new TracksProvider().GetTrackAsync(trackId);
 
-                if (track.Status != ETrackStatus.Recorded)
-                {
-                    Debug.WriteLine("skip track {0} - status not recorded", trackId);
-                    return;
-                }
+                //if (track.Status != ETrackStatus.Recorded)
+                //{
+                //    Debug.WriteLine("skip track {0} - status not recorded", trackId);
+                //    return;
+                //}
 
                 track.Status = ETrackStatus.Processing;
 
                 await new TracksProvider().SaveTrackAsync(track);
                 //todo send change status message
 
-
-
                 var outputFile = await new TracksProvider().GetTrackDataFile(trackId);
 
                 //gzip & base64
 
+                string tmp = "";
 
                 using (var fileStream = await outputFile.OpenStreamForWriteAsync())
                 {
@@ -45,7 +45,7 @@ namespace UR.Core.WP81.Services
 
                             foreach (var file in dataFiles)
                             {
-                                Debug.WriteLine("write dataFile {0}", file.Name);
+                                Debug.WriteLine("read dataFile {0}", file.Name);
                                 using (var dataFileStream = await file.OpenStreamForReadAsync())
                                 {
                                     CopyStream(dataFileStream, compressionStream);
@@ -55,11 +55,57 @@ namespace UR.Core.WP81.Services
 
                         var array = ms.ToArray();
 
-                        var res = Convert.ToBase64String(array);
+                        //hack to pass server header checking system :(
+                        array[8] = 0;
+                        //array[10] = 237;
+
+                        //var msin = new MemoryStream(array);
+                        //using (var decompress = new GZipStream(msin, CompressionMode.Decompress))
+                        //{
+                        //    var sr = new StreamReader(decompress);
+                        //    var s = await sr.ReadToEndAsync();
+                        //}
+
+                        tmp = Convert.ToBase64String(array);
+                    }
+
+                    string delimeter = "\n";
+
+
+                    if (tmp.Length > 0)
+                    {
+                        var insertCount = 0;
+                        var lineCharsCount = 77;
+                        var insertPos = lineCharsCount - 1;
+
+
+                        var sb = new StringBuilder(tmp.Length + (tmp.Length / lineCharsCount) * 2 + 50);
+
+                        sb.Insert(0, tmp);
+
+                        tmp = null;
+
+                        //var sbLength = sb.Length;
+
+                        while (true)
+                        {
+                            sb.Insert(insertPos, delimeter);
+
+                            insertPos += lineCharsCount;
+
+                            insertCount++;
+
+                            if (insertPos >= sb.Length) break;
+                        }
+
+
+
+
+                        //var resstr = sb.ToString();
 
                         using (var writer = new StreamWriter(fileStream))
                         {
-                            await writer.WriteAsync(res);
+                            await writer.WriteAsync(sb.ToString());
                         }
                     }
                 }

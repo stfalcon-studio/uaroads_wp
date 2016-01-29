@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Sensors;
 using Caliburn.Micro;
+using Cimbalino.Toolkit.Extensions;
+using Eve.Core.Extensions;
 using UR.Core.WP81.API.Models;
-using UR.Core.WP81.DataRecorders;
-using UR.Core.WP81.Models;
+using UR.Core.WP81.Common;
+using UR.Core.WP81.Services.DataRecorders;
+using Microsoft.ApplicationInsights;
 
 namespace UR.Core.WP81.Services
 {
@@ -39,7 +43,7 @@ namespace UR.Core.WP81.Services
 
         private RecordService()
         {
-           
+
         }
 
 
@@ -47,96 +51,165 @@ namespace UR.Core.WP81.Services
         private AccelerometerRecordService _accelerometerRecordService;
         public async Task StartAsync()
         {
-            IsStarted = true;
-
-            _geoList = new List<DataGeo>(GeoMaxElements + 20);
-            _accelerometerList = new List<DataAccelerometer>(AccMaxElements + 20);
-
-            if (StateService.Instance.CurrentTrack == null)
+            var task = new Task[] { StartInner() };
+            await Task.Factory.ContinueWhenAll(task, (a) =>
             {
-                if (SettingsService.CurrentTrackId == Guid.Empty)
-                {
-                    var track = await new TracksProvider().GetTrackAsync(Guid.NewGuid());
-
-                    SettingsService.CurrentTrackId = track.TrackId;
-
-                    StateService.Instance.CurrentTrack = track;
-                }
-                else
-                {
-                    var track = await new TracksProvider().GetTrackAsync(SettingsService.CurrentTrackId);
-
-                    StateService.Instance.CurrentTrack = track;
-                }
-            }
-            else
-            {
-                if (StateService.Instance.CurrentTrack.TrackId != SettingsService.CurrentTrackId)
-                {
-                    var track = await new TracksProvider().GetTrackAsync(SettingsService.CurrentTrackId);
-
-                    StateService.Instance.CurrentTrack = track;
-                }
-            }
 
 
-            var cTrack = StateService.Instance.CurrentTrack;
-
-            cTrack.Status = ETrackStatus.Recording;
-
-            cTrack.StartedDateTime = DateTime.Now;
-
-            _currentTrackId = cTrack.TrackId;
-
-            await new TracksProvider().SaveTrackAsync(cTrack);
-
-            _locationRecordService = new LocationRecordService();
-            _locationRecordService.Start();
-
-            _accelerometerRecordService = new AccelerometerRecordService();
-            _accelerometerRecordService.Start();
-
-            await Task.Delay(500);
-
-            IoC.Get<IEventAggregator>().PublishOnUIThread(new DataHandlerStatusChanged(true));
+            });
         }
 
 
         public async Task StopAsync()
         {
-            IsStarted = false;
-
-            if (_locationRecordService != null)
+            var task = new Task[] { StopInner() };
+            await Task.Factory.ContinueWhenAll(task, (a) =>
             {
-                _locationRecordService.Stop();
-                _locationRecordService = null;
+
+
+            });
+        }
+
+
+        private async Task StartInner()
+        {
+            if (IsStarted) return;
+            IsStarted = true;
+
+            try
+            {
+                _geoList = new List<DataGeo>(GeoMaxElements + 20);
+                _accelerometerList = new List<DataAccelerometer>(AccMaxElements + 20);
+
+                //var ssTrack = StateService.Instance.CurrentTrack;
+                //var ssTrackId = SettingsService.CurrentTrackId;
+
+                ATrack ssTrack;
+                Guid ssTrackId;
+
+                ssTrack = await IoC.Get<ITracksProvider>().CreateTrackAsync();
+                ssTrackId = ssTrack.Id;
+
+                //if (ssTrack == null)
+                //{
+                //    if (ssTrackId == Guid.Empty)
+                //    {
+                //        var track = await IoC.Get<ITracksProvider>().GetTrackAsync(Guid.NewGuid());
+
+                //        ssTrackId = track.Id;
+
+                //        ssTrack = track;
+                //    }
+                //    else
+                //    {
+                //        var track = await IoC.Get<ITracksProvider>().GetTrackAsync(ssTrackId);
+
+                //        ssTrack = track;
+                //    }
+                //}
+                //else
+                //{
+                //    if (ssTrack.Id != ssTrackId)
+                //    {
+                //        var track = await IoC.Get<ITracksProvider>().GetTrackAsync(ssTrackId);
+
+                //        ssTrack = track;
+                //    }
+                //}
+
+                ssTrack.Status = ETrackStatus.Recording;
+
+                ssTrack.StartedDateTime = DateTime.Now;
+
+                _currentTrackId = ssTrackId;
+
+                ssTrack.Comment = DateTime.Now.ToString("U");
+
+                await IoC.Get<ITracksProvider>().SaveTrackAsync(ssTrack);
+
+                await Task.Delay(1000);
+                StateService.Instance.CurrentTrack = ssTrack;
+                SettingsService.CurrentTrackId = ssTrackId;
+                MsgAppState.Publish(EGlobalState.Recording);
+
+                _locationRecordService = new LocationRecordService();
+                _locationRecordService.Start();
+
+                _accelerometerRecordService = new AccelerometerRecordService();
+                _accelerometerRecordService.Start();
+                return;
+            }
+            catch (Exception err)
+            {
+                IsStarted = false;
+                StateService.Instance.CurrentTrack = null;
+                SettingsService.CurrentTrackId = Guid.Empty;
+                new TelemetryClient().TrackException(err);
+
+                if (_locationRecordService != null)
+                {
+                    _locationRecordService.Stop();
+                    _locationRecordService = null;
+                }
+
+                if (_accelerometerRecordService != null)
+                {
+                    _accelerometerRecordService.Stop();
+                    _accelerometerRecordService = null;
+                }
+            }
+        }
+
+
+        private async Task StopInner()
+        {
+            try
+            {
+                IsStarted = false;
+
+                if (_locationRecordService != null)
+                {
+                    _locationRecordService.Stop();
+                    _locationRecordService = null;
+                }
+
+                if (_accelerometerRecordService != null)
+                {
+                    _accelerometerRecordService.Stop();
+                    _accelerometerRecordService = null;
+                }
+
+                await FlushAsync();
+
+                var cTrack = StateService.Instance.CurrentTrack;
+
+                cTrack.Status = ETrackStatus.Recorded;
+
+                cTrack.FinishedDateTime = DateTime.Now;
+
+                cTrack.TrackDuration = DateTime.Now - cTrack.StartedDateTime;
+
+                await IoC.Get<ITracksProvider>().SaveTrackAsync(cTrack);
+
+                await Task.Delay(1000);
+
+                //IoC.Get<IEventAggregator>().PublishOnUIThread(new MsgDataHandlerStatusChanged(false));
+            }
+            catch (Exception err)
+            {
+                new TelemetryClient().TrackException(err);
+
+            }
+            finally
+            {
+                StateService.Instance.CurrentTrack = null;
+
+                SettingsService.CurrentTrackId = Guid.Empty;
+
+                _currentTrackId = Guid.Empty;
+                MsgAppState.Publish(EGlobalState.Normal);
             }
 
-            if (_accelerometerRecordService != null)
-            {
-                _accelerometerRecordService.Stop();
-                _accelerometerRecordService = null;
-            }
-
-            await FlushAsync();
-
-            var cTrack = StateService.Instance.CurrentTrack;
-
-            cTrack.Status = ETrackStatus.Recorded;
-
-            cTrack.FinishedDateTime = DateTime.Now;
-
-            await new TracksProvider().SaveTrackAsync(cTrack);
-
-            StateService.Instance.CurrentTrack = null;
-
-            SettingsService.CurrentTrackId = Guid.Empty;
-
-            _currentTrackId = Guid.Empty;
-
-            await Task.Delay(500);
-
-            IoC.Get<IEventAggregator>().PublishOnUIThread(new DataHandlerStatusChanged(false));
         }
 
 
@@ -147,14 +220,63 @@ namespace UR.Core.WP81.Services
         {
             //position.Coordinate.
 
-            Debug.WriteLine("GPS lat{0}-lon{1}-alt{2}", position.Coordinate.Point.Position.Latitude, position.Coordinate.Longitude, position.Coordinate.Altitude);
+            //var text = string.Format("{0},{1},{2}", position.Coordinate.Point.Position.Latitude,
+            //    position.Coordinate.Longitude, position.Coordinate.Altitude);
 
+
+            //IoC.Get<IEventAggregator>().PublishOnCurrentThread(new MsgDataChanged(true, text));
+
+            //Debug.WriteLine(text);
+
+            var cTrack = StateService.Instance.CurrentTrack;
+
+            cTrack.LocationPointsCount++;
+
+            if (cTrack.LastGeoposition.HasValue)
+            {
+                var bgp = new BasicGeoposition()
+                {
+                    Latitude = position.Coordinate.Latitude,
+                    Longitude = position.Coordinate.Longitude,
+                    Altitude = position.Coordinate.Altitude ?? 0
+                };
+
+                cTrack.TrackLength += Haversine.Distance(cTrack.LastGeoposition.Value, bgp);
+
+                cTrack.LastGeoposition = bgp;
+
+                if (position.Coordinate.Speed != null)
+                {
+                    cTrack.CurrentSpeed = ConvertSpeed(position.Coordinate.Speed.Value);
+
+                    cTrack.SummOfSpeed += cTrack.CurrentSpeed;
+
+                    cTrack.AvgSpeedPointsCount++;
+                }
+            }
+            else
+            {
+                var bgp = new BasicGeoposition()
+                {
+                    Latitude = position.Coordinate.Latitude,
+                    Longitude = position.Coordinate.Longitude,
+                    Altitude = position.Coordinate.Altitude ?? 0
+                };
+
+                cTrack.LastGeoposition = bgp;
+            }
 
             _geoList.Add(new DataGeo()
             {
                 Latitude = position.Coordinate.Point.Position.Latitude,
                 Longitude = position.Coordinate.Point.Position.Longitude,
-                TimeOffset = position.Coordinate.Timestamp
+                TimeOffset = position.Coordinate.Timestamp,
+                //Speed = position.Coordinate.Speed.HasValue ? ((position.Coordinate.Speed.Value * 60.0 * 60.0) / 100.0) : 0.0,
+
+                //в оригинал = V * 100 / 60 / 60
+                Speed = position.Coordinate.Speed.HasValue ? ConvertSpeed(position.Coordinate.Speed.Value) : 0.0,
+
+                Accuracy = position.Coordinate.Accuracy
             });
 
             CheckGeo();
@@ -163,6 +285,10 @@ namespace UR.Core.WP81.Services
         public void AddAccelerometerPoint(DateTimeOffset offcet, double value)
         {
             //Debug.WriteLine("ACC {0}", value);
+
+            var cTrack = StateService.Instance.CurrentTrack;
+
+            cTrack.PitPointsCount++;
 
             _accelerometerList.Add(new DataAccelerometer()
             {
@@ -191,7 +317,7 @@ namespace UR.Core.WP81.Services
 
                 _geoList = new List<DataGeo>(GeoMaxElements + 20);
 
-                await new TracksProvider().WriteToTrackAsync(tmp, _currentTrackId);
+                await IoC.Get<ITracksProvider>().WriteToTrackAsync(tmp, _currentTrackId);
             }
         }
 
@@ -211,16 +337,26 @@ namespace UR.Core.WP81.Services
 
                 _accelerometerList = new List<DataAccelerometer>(AccMaxElements + 20);
 
-                await new TracksProvider().WriteToTrackAsync(tmp, _currentTrackId);
+                await IoC.Get<ITracksProvider>().WriteToTrackAsync(tmp, _currentTrackId);
             }
         }
 
         private async Task FlushAsync()
         {
-            await new TracksProvider().WriteToTrackAsync(_accelerometerList, _currentTrackId);
+            await IoC.Get<ITracksProvider>().WriteToTrackAsync(_accelerometerList, _currentTrackId);
             _accelerometerList = null;
-            await new TracksProvider().WriteToTrackAsync(_geoList, _currentTrackId);
+            await IoC.Get<ITracksProvider>().WriteToTrackAsync(_geoList, _currentTrackId);
             _geoList = null;
+        }
+
+        public static string ConvertToUnix(DateTimeOffset offset)
+        {
+            return (offset.DateTime.ToUnixTimeMilliseconds()).ToString(CultureInfo.InvariantCulture);
+        }
+
+        private double ConvertSpeed(double inMeters)
+        {
+            return 3.6 * inMeters;
         }
     }
 
@@ -229,6 +365,9 @@ namespace UR.Core.WP81.Services
         public DateTimeOffset TimeOffset { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+
+        public double Speed { get; set; }
+        public double Accuracy { get; set; }
     }
 
 

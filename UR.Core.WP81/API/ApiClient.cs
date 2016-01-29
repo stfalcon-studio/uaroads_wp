@@ -46,7 +46,7 @@ namespace UR.Core.WP81.API
 
             _httpClient = new HttpClient(_httpClientHandler);
 
-            AddHeaders(_httpClient);
+            //AddHeaders(_httpClient);
         }
 
         public static ApiClient Create()
@@ -96,11 +96,25 @@ namespace UR.Core.WP81.API
 
             };
 
+            //message.Content 
+
+            AddHeaders(message);
+
             if (httpMethod == HttpMethod.Post)
             {
-                var query = await ConvertToHttpContent(container).ReadAsStringAsync();
+                var content = ConvertToHttpContent(container);
 
-                message.Content = new StringContent(query);
+                var query = await content.ReadAsStringAsync();
+
+                query = WebUtility.UrlDecode(query);
+
+                message.Content = content;
+
+                if (!container.HasBinaryContents())
+                {
+                    //new StringContent(query);
+                    message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                }
             }
 
 
@@ -176,6 +190,14 @@ namespace UR.Core.WP81.API
                     };
                 }
 
+                var content = await response.Content.ReadAsStringAsync();
+
+                return new T()
+                {
+                    StatusCode = response.StatusCode,
+                    ErrorMessage = content
+                };
+
 
                 //#if LOG_REQ
                 //                Debug.WriteLine("RESPONSE:\r\r\n{0}\r\r\n", s);
@@ -190,42 +212,9 @@ namespace UR.Core.WP81.API
                 //    return res;
                 //}
 
-                var apiresponse = JsonConvert.DeserializeObject<T>(s);
+                //var apiresponse = JsonConvert.DeserializeObject<T>(s);
 
-                var uri = new Uri(AppConstant.BaseApiUrl);
-
-                //get cookie values if only SS is empty
-                //if (StateService.Instance.UserToken == null)
-                //{
-                //    _cookieContainer = null; // delete static field with auth data. don't really need
-
-                //    var cookieCoollection = _httpClientHandler.CookieContainer.GetCookies(uri).Cast<Cookie>().ToList();
-
-                //    var c = cookieCoollection.FirstOrDefault(x => x.Name == "token");
-
-                //    if (c != null && !string.IsNullOrWhiteSpace(c.Value))
-                //    {
-                //        var token = c.Value;
-
-                //        var cuid = cookieCoollection.FirstOrDefault(x => x.Name == "uid");
-
-                //        if (cuid != null && !string.IsNullOrWhiteSpace(cuid.Value))
-                //        {
-                //            var uid = cuid.Value;
-
-                //            var resp = (AUserApiResponse)(ApiResponse)apiresponse;
-
-                //            resp.Token = token;
-                //            resp.Uid = uid;
-
-                //            //var ut = new UserToken();
-                //            //ut.Set(token, uid);
-                //            //StateService.Instance.UserToken = ut;
-                //        }
-                //    }
-                //}
-
-                return apiresponse;
+                //return apiresponse;
             }
             catch (Exception ex)
             {
@@ -277,6 +266,41 @@ namespace UR.Core.WP81.API
 
                     return new StringContent(json.ToString());
                 }
+            }
+
+            if (container.HasBinaryContents())
+            {
+                var binContent = new MultipartFormDataContent();
+
+                foreach (var keyValuePair in container)
+                {
+                    var strContent = new StringContent(keyValuePair.Value, new AsciiEncoding());
+                    strContent.Headers.Add("Content-Transfer-Encoding", "8bit");
+                    binContent.Add(strContent, keyValuePair.Key);
+                }
+
+                var file = container.BinaryData.FirstOrDefault();
+
+                var fileContent = new ByteArrayContent(file.Value.Value);
+
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+                fileContent.Headers.Add("Content-Transfer-Encoding", "binary");
+
+                //http://www.iana.org/assignments/cont-disp/cont-disp.xhtml
+                fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+
+                fileContent.Headers.ContentDisposition.Parameters.Add(new NameValueHeaderValue("name", "data"));
+                fileContent.Headers.ContentDisposition.Parameters.Add(new NameValueHeaderValue("filename", $"{file.Value.Key}.txt"));
+
+                //Content - Disposition: form - data; name = "data"; filename = "1438144717732341208949.tmp"
+
+                binContent.Add(fileContent, file.Key, file.Value.Key);
+
+
+                return binContent;
+
+                //return new MultipartFormDataContent(); { (IEnumerable<KeyValuePair<string, string>>)container)};
             }
 
             return new FormUrlEncodedContent((IEnumerable<KeyValuePair<string, string>>)container);
@@ -374,8 +398,10 @@ namespace UR.Core.WP81.API
         //    return res;
         //}
 
-        private void AddHeaders(HttpClient httpClient)
+        private void AddHeaders(HttpRequestMessage httpClient)
         {
+            //httpClient.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+
             //httpClient.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
 
             //httpClient.DefaultRequestHeaders.Add("Pragma", "no-cache");

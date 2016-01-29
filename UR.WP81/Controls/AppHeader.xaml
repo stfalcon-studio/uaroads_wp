@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="UR.WP81.Controls.AppHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="using:UR.WP81.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="300"
+             d:DesignWidth="400"
+             mc:Ignorable="d">
+
+    <Grid Background="Black">
+        <Grid Margin="18 30 0 0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--<Image Grid.Column="0"
+                       MaxHeight="35"
+                       Source="../Assets/Icons/appheader.png" />-->
+
+
+
+                <TextBlock Grid.Column="1"
+                           Margin="0 0 0 0"
+                           VerticalAlignment="Center"
+                           FontSize="26"
+                           Text="Дороги України" />
+
+                <TextBlock Grid.Column="2"
+                           Margin="5 5 0 0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Top"
+                           FontSize="10"
+                           Foreground="Yellow"
+                           Text="beta" />
+            </Grid>
+
+
+
+            <Grid Grid.Row="1">
+
+                <TextBlock x:Name="AppHeaderHeader"
+                           Margin="0 8 0 3"
+                           FontSize="17"
+                           Foreground="White"
+                           LineHeight="20"
+                           LineStackingStrategy="BlockLineHeight" />
+
+
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
