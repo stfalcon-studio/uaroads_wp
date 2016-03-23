@@ -12,23 +12,10 @@ using Windows.Storage.Search;
 using AutoMapper;
 using Newtonsoft.Json;
 using UR.Core.WP81.Common;
+using UR.Core.WP81.Models;
 
 namespace UR.Core.WP81.Services
 {
-    public interface ITracksProvider
-    {
-        Task<ATrack> CreateTrackAsync();
-        Task<ATrack> GetTrackAsync(Guid trackId);
-        Task SaveTrackAsync(ATrack track);
-        Task<StorageFile> GetTrackDataFile(Guid trackId);
-        Task<StorageFile[]> GetDataFilesAsync(Guid trackId);
-        Task WriteToTrackAsync(List<DataAccelerometer> tmp, Guid currentTrackId);
-        Task WriteToTrackAsync(List<DataGeo> geoList, Guid currentTrackId);
-        Task<string> GetTrackDataAsync(Guid trackId);
-        Task<List<ATrack>> GetTracksAsync();
-        Task DeleteTracksAsync();
-    }
-
     public class TracksProvider : ITracksProvider
     {
         private readonly IDbTracksProvider _db;
@@ -41,129 +28,6 @@ namespace UR.Core.WP81.Services
 
             Mapper.CreateMap<DbTrack, ATrack>();
         }
-
-
-        //public async Task<List<ATrack>> GetTracksAsync()
-        //{
-        //    return _db.GetTracksAsync();
-
-        //    List<ATrack> resultList = new List<ATrack>(1);
-
-        //    var folder = await GetDataFolderAsync();
-
-        //    var childrenFolders = await folder.GetFoldersAsync();
-
-        //    if (childrenFolders != null)
-        //    {
-        //        resultList = new List<ATrack>(childrenFolders.Count);
-
-        //        Guid g;
-
-        //        foreach (var cf in childrenFolders)
-        //        {
-        //            if (Guid.TryParse(cf.Name, out g))
-        //            {
-        //                try
-        //                {
-        //                    var file = await cf.GetFileAsync(TrackHeaderFileName);
-        //                    //var contents = await file.OpenReadAsync();
-
-        //                    using (var sr = new StreamReader((await file.OpenReadAsync()).AsStreamForRead()))
-        //                    {
-        //                        var content = await sr.ReadToEndAsync();
-
-        //                        var obj = JsonConvert.DeserializeObject<ATrack>(content);
-
-        //                        resultList.Add(obj);
-        //                    }
-        //                }
-        //                catch (Exception err)
-        //                {
-        //                    Debug.WriteLine("DATA FILE FOR {0} TRACK NOT FOUND OR CORREPTED --\r\n {1}", cf.Name, err.Message);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return resultList;
-        //}
-
-        //public async Task SaveTrackAsync(ATrack track)
-        //{
-        //    //var folder = await GetDataFolder();
-
-        //    var trackFolder = await GetTrackFolderAsync(track.TrackId);
-
-        //    var strValue = JsonConvert.SerializeObject(track, Formatting.Indented);
-
-        //    var targetFile = await trackFolder.CreateFileAsync(TrackHeaderFileName, CreationCollisionOption.ReplaceExisting);
-
-        //    using (var sw = new StreamWriter(await targetFile.OpenStreamForWriteAsync()))
-        //    {
-        //        await sw.WriteAsync(strValue);
-        //    }
-        //}
-
-        //public async Task<ATrack> GetTrackAsync(Guid id)
-        //{
-        //    var trackFolder = await GetTrackFolderAsync(id);
-
-        //    //var strValue = JsonConvert.SerializeObject(track, Formatting.Indented);
-
-        //    var targetFile = await trackFolder.CreateFileAsync(TrackHeaderFileName, CreationCollisionOption.OpenIfExists);
-        //    string fileContent;
-        //    using (var sw = new StreamReader(await targetFile.OpenStreamForReadAsync()))
-        //    {
-        //        fileContent = await sw.ReadToEndAsync();
-        //    }
-
-        //    if (string.IsNullOrEmpty(fileContent))
-        //    {
-        //        var track = new ATrack()
-        //        {
-        //            TrackId = id
-        //        };
-
-        //        await SaveTrackAsync(track);
-
-        //        return track;
-        //    }
-        //    else
-        //    {
-        //        try
-        //        {
-        //            var res = JsonConvert.DeserializeObject<ATrack>(fileContent);
-        //            return res;
-        //        }
-        //        catch (Exception err)
-        //        {
-        //            Debug.WriteLine("DATA FILE FOR {0} TRACK NOT EXISTS OR CORRUPTED --\r\n {1}", ATrack.GetName(id), err.Message);
-
-        //            return new ATrack()
-        //            {
-        //                TrackId = id
-        //            };
-        //        }
-        //    }
-        //}
-
-
-        //public async Task DeleteTracksAsync()
-        //{
-        //    var tracks = await GetTracksAsync();
-
-        //    foreach (var track in tracks.Where(x => x.Status != ETrackStatus.Recording))
-        //    {
-        //        await DeleteTrackAsync(track.TrackId);
-        //    }
-        //}
-
-        //public async Task DeleteTrackAsync(Guid trackId)
-        //{
-        //    var folder = await GetTrackFolderAsync(trackId);
-
-        //    await folder.DeleteAsync(StorageDeleteOption.PermanentDelete);
-        //}
 
         public async Task<ATrack> CreateTrackAsync()
         {
@@ -339,7 +203,7 @@ namespace UR.Core.WP81.Services
 
                     //time;0;lat;long;cp;accuracy;velocity
                     sb.AppendFormat("{0};0;{1};{2};cp;{3};{4}#",
-                        RecordService.ConvertToUnix(point.TimeOffset),
+                        DataRecorder.ConvertToUnix(point.TimeOffset),
                         point.Latitude.ToString(CultureInfo.InvariantCulture),
                         point.Longitude.ToString(CultureInfo.InvariantCulture),
                         double.IsNaN(point.Accuracy) ? (0.0).ToString(CultureInfo.InvariantCulture) : point.Accuracy.ToString(CultureInfo.InvariantCulture),
@@ -393,7 +257,7 @@ namespace UR.Core.WP81.Services
 
                     //time;pit;0;0;cp;0;0
                     sb.AppendFormat("{0};{1};0;0;origin;0;0#",
-                        RecordService.ConvertToUnix(point.TimeOffset),
+                        DataRecorder.ConvertToUnix(point.TimeOffset),
                         point.Value.ToString(CultureInfo.InvariantCulture));
                 }
 

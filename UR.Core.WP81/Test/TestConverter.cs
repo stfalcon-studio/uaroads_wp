@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 using Newtonsoft.Json;
 using UR.Core.WP81.Common;
+using UR.Core.WP81.Models;
 using UR.Core.WP81.Services;
 
 namespace UR.Core.WP81.Test

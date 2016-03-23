@@ -18,7 +18,7 @@ namespace UR.WP81.ViewModels
 
         public string AccValue { get; set; }
 
-        public string GeoStatus{ get; set; }
+        public string GeoStatus { get; set; }
 
         public MainPageViewModel(INavigationService navigationService)
             : base(navigationService)
@@ -66,7 +66,7 @@ namespace UR.WP81.ViewModels
             if (IsBusy) return;
 
             IsBusyStatusBar = true;
-            await RecordService.GetInstance().StartAsync();
+            await DataRecorder.GetInstance().StartAsync();
             IsBusyStatusBar = false;
         }
 
@@ -75,7 +75,7 @@ namespace UR.WP81.ViewModels
             if (IsBusy) return;
 
             IsBusyStatusBar = true;
-            await RecordService.GetInstance().StopAsync();
+            await DataRecorder.GetInstance().StopAsync();
             IsBusyStatusBar = false;
         }
 
@@ -98,7 +98,7 @@ namespace UR.WP81.ViewModels
             if (track != null)
             {
                 TrackDuration = (DateTime.Now - track.StartedDateTime).ToString(@"hh\:mm\:ss");
-                TrackLength = track.TrackLength.ToString("F2") + " km";
+                TrackLength = $"{(track.TrackLength / 1000).ToString("F2")}  km";
                 Speed = track.CurrentSpeed.ToString("F1");
             }
             else
