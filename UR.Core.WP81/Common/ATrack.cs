@@ -26,7 +26,7 @@ namespace UR.Core.WP81.Common
         public double TrackAvgSpeed { get; set; }
 
         /// <summary>
-        /// in kilometers
+        /// in meters
         /// </summary>
         public double TrackLength { get; set; }
 
@@ -77,7 +77,7 @@ namespace UR.Core.WP81.Common
 
         public string TrackLengthStr
         {
-            get { return String.Format("{0:F2} km", TrackLength); }
+            get { return String.Format("{0:F2} km", TrackLength / 1000); }
         }
 
         public string TrackName

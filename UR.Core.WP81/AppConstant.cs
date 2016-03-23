@@ -2,22 +2,26 @@
 {
     public static class AppConstant
     {
-        public const int MaxSavedTracksAtStorage = 50;
+        public const uint MaxSavedTracksAtStorage = 50;
 
-        public const int SensorCacheCount = 10;
+        public const uint SensorCacheCount = 10;
 
-        public const int LocationCacheCount = 10;
-
+        public const uint LocationCacheCount = 10;
 
         /// <summary>
         /// ms  SENSOR_DELAY_36Hz = 27777;
         /// </summary>
-        public const int SensorUpdateInterval = 28;
+        public const uint SensorUpdateInterval = 28;
 
         /// <summary>
         /// ms
         /// </summary>
-        public const int LocationUpdateInterval = 1000;
+        public const uint LocationReportInterval = 1000;
+
+        /// <summary>
+        /// in meters
+        /// </summary>
+        public const uint MINIMAL_DISTANCE_BETWEEN_GPS_POINTS_METERS = 30;
 
         public const string DataFolderName = "Tracks";
 

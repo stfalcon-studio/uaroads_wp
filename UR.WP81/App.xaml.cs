@@ -18,6 +18,7 @@ using UR.WP81.ViewModels;
 using UR.WP81.Views;
 using Microsoft.ApplicationInsights;
 using UR.Core.WP81.Common;
+using UR.Core.WP81.Models;
 
 namespace UR.WP81
 {

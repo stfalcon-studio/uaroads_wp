@@ -8,6 +8,7 @@ using Caliburn.Micro;
 using Cimbalino.Toolkit.Compression;
 using Microsoft.ApplicationInsights;
 using UR.Core.WP81.Common;
+using UR.Core.WP81.Models;
 
 namespace UR.Core.WP81.Services
 {

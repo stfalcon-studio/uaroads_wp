@@ -8,6 +8,7 @@ using Caliburn.Micro;
 using Microsoft.ApplicationInsights;
 using UR.Core.WP81.API.Models;
 using UR.Core.WP81.Common;
+using UR.Core.WP81.Models;
 using UR.Core.WP81.Services;
 using UR.WP81.Common;
 using UR.WP81.ViewModels.BaseViewModels;

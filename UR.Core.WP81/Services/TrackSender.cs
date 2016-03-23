@@ -7,6 +7,7 @@ using Caliburn.Micro;
 using Microsoft.ApplicationInsights;
 using UR.Core.WP81.API;
 using UR.Core.WP81.Common;
+using UR.Core.WP81.Models;
 
 namespace UR.Core.WP81.Services
 {
