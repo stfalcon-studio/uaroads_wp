@@ -5,7 +5,6 @@ using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using Cimbalino.Toolkit.Compression;
 using Microsoft.ApplicationInsights;
 using UR.Core.WP81.Common;
 using UR.Core.WP81.Models;
