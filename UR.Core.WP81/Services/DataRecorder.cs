@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Sensors;
 using Caliburn.Micro;
-using Cimbalino.Toolkit.Extensions;
 using Eve.Core.Extensions;
 using UR.Core.WP81.API.Models;
 using UR.Core.WP81.Common;
