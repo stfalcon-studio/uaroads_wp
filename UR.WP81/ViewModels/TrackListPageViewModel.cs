@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Caliburn.Micro;
 using Microsoft.ApplicationInsights;
-using UR.Core.WP81.API.Models;
 using UR.Core.WP81.Common;
 using UR.Core.WP81.Models;
 using UR.Core.WP81.Services;

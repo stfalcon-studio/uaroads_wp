@@ -304,10 +304,11 @@
             </CommandBar.PrimaryCommands>
 
             <CommandBar.SecondaryCommands>
+
                 <AppBarButton x:Name="AppBtnMenuSettingsButton"
                               IsEnabled="{Binding IsBusy,
                                                   Converter={StaticResource CBoolNotBool}}"
-                              Label="налаштування" />
+                              Label="інфо та налаштування" />
 
                 <AppBarButton x:Name="AppBtnMenuFeedback"
                               IsEnabled="{Binding IsBusy,

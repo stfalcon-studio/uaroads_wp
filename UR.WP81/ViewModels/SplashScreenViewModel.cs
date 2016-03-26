@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 using Eve.Caliburn;
-using UR.Core.WP81.API;
 using UR.Core.WP81.Services;
 using UR.WP81.ViewModels.BaseViewModels;
 

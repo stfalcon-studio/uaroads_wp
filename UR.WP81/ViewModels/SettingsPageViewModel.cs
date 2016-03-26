@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Windows.System;
 using Caliburn.Micro;
-using UR.Core.WP81.API.Models;
 using UR.Core.WP81.Services;
 using UR.WP81.Common;
 using UR.WP81.ViewModels.BaseViewModels;
@@ -45,6 +41,17 @@ namespace UR.WP81.ViewModels
             SettingsService.DeviceName = String.Empty;
             SettingsService.UserEmail = String.Empty;
             NavigationService.ToMainPage();
+        }
+
+        public void GoToWww()
+        {
+            //
+            Launcher.LaunchUriAsync(new Uri("http://uaroads.com/"));
+        }
+
+        public void GoToPrivacy()
+        {
+            NavigationService.UriFor<PrivacyPageViewModel>().Navigate();
         }
     }
 }

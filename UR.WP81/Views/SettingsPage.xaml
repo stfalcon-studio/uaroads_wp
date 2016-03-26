@@ -20,51 +20,58 @@
 
         <controls:AppHeader Header="інфо та налаштування" />
 
-        <Grid Grid.Row="1" Margin="19 20 19 0">
+        <Grid Grid.Row="1"
+              Margin="19 20 19 0">
             <StackPanel Visibility="{Binding CanLogout, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock FontSize="14"
                            Opacity="0.7"
                            Text="ваш email" />
-                <TextBlock FontSize="18" Text="{Binding UserLogin}" />
+                <TextBlock FontSize="18"
+                           Text="{Binding UserLogin}" />
                 <TextBlock FontSize="14"
                            Opacity="0.7"
                            Text="id пристрою" />
-                <TextBlock FontSize="18" Text="{Binding DeviceId}" />
+                <TextBlock FontSize="18"
+                           Text="{Binding DeviceId}" />
                 <TextBlock FontSize="14"
                            Opacity="0.7"
                            Text="назва пристрою" />
-                <TextBlock FontSize="18" Text="{Binding DeviceName}" />
+                <TextBlock FontSize="18"
+                           Text="{Binding DeviceName}" />
             </StackPanel>
 
-            <Button x:Name="AppBtnLoginButton"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    BorderThickness="1"
-                    Content="прив'язати пристрій"
-                    Visibility="{Binding CanLogout,
+            <HyperlinkButton x:Name="AppBtnLoginButton"
+                             VerticalAlignment="Top"
+                             Content="Прив'язати пристрій"
+                             Visibility="{Binding CanLogout,
                                          Converter={StaticResource BooleanToOppositeVisibilityConverter}}" />
 
 
 
+            <StackPanel Margin="0 0 0 40"
+                        VerticalAlignment="Bottom">
 
-            <StackPanel Margin="0 0 0 40" VerticalAlignment="Bottom">
+                <HyperlinkButton Content="Перейти на сайт"
+                                 x:Name="GoToWww" />
 
+                <HyperlinkButton Content="Політика конфіденційності"
+                                 x:Name="GoToPrivacy"
+                                 Margin="0 12 0 0" />
 
-
-                <Button x:Name="LogoutButton"
-                        HorizontalAlignment="Stretch"
-                        BorderThickness="1"
-                        Content="відв'язати пристрій"
-                        Visibility="{Binding CanLogout,
+                <HyperlinkButton Content="відв'язати пристрій"
+                                 Margin="0 12 0 0"
+                                 x:Name="LogoutButton"
+                                 Visibility="{Binding CanLogout,
                                              Converter={StaticResource BooleanToVisibilityConverter}}" />
 
+                <HyperlinkButton x:Name="AppBtnMenuFeedback"
+                                 Margin="0 12 0 0"
+                                 Content="Зворотній зв'язок" />
 
-                <Button x:Name="AppBtnMenuFeedback"
-                        HorizontalAlignment="Stretch"
-                        BorderThickness="1"
-                        Content="зворотній зв'язок" />
-                <TextBlock HorizontalAlignment="Right" FontSize="14">
-                    <Run Text="ver:" />
+                <TextBlock HorizontalAlignment="Right"
+                           Margin="0 12 0 0"
+                           FontSize="14">
+                    <Run Text="версія додатку:" />
                     <Run Text="{Binding AppVersion}" />
                 </TextBlock>
             </StackPanel>

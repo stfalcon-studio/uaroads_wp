@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Globalization;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -14,7 +15,6 @@ using Caliburn.Micro;
 using Eve.Core.UI;
 using UR.Core.WP81.API;
 using UR.Core.WP81.Services;
-using UR.WP81.ViewModels;
 using UR.WP81.Views;
 using Microsoft.ApplicationInsights;
 using UR.Core.WP81.Common;
@@ -49,26 +49,26 @@ namespace UR.WP81
 
         private SplashScreen _argsSplashScreen;
 
-        private Frame CreateRootFrame()
-        {
-            var rootFrame = Window.Current.Content as Frame;
+        //private Frame CreateRootFrame()
+        //{
+        //    var rootFrame = Window.Current.Content as Frame;
 
-            // Do not repeat app initialization when the Window already has content,
-            // just ensure that the window is active
-            if (rootFrame == null)
-            {
-                // Create a Frame to act as the navigation context and navigate to the first page
-                rootFrame = new Frame();
+        //    // Do not repeat app initialization when the Window already has content,
+        //    // just ensure that the window is active
+        //    if (rootFrame == null)
+        //    {
+        //        // Create a Frame to act as the navigation context and navigate to the first page
+        //        rootFrame = new Frame();
 
-                // Set the default language
-                rootFrame.Language = ApplicationLanguages.Languages[0];
+        //        // Set the default language
+        //        rootFrame.Language = ApplicationLanguages.Languages[0];
 
-                // Place the frame in the current Window
-                Window.Current.Content = rootFrame;
-            }
+        //        // Place the frame in the current Window
+        //        Window.Current.Content = rootFrame;
+        //    }
 
-            return rootFrame;
-        }
+        //    return rootFrame;
+        //}
 
         //private async Task RestoreStatusAsync(ApplicationExecutionState previousExecutionState)
         //{
@@ -164,12 +164,29 @@ namespace UR.WP81
 
             //_container.RegisterSingleton(typeof(AppGlobalCommandHandler), "AppGlobalCommandHandler", typeof(AppGlobalCommandHandler));
 
-            _container.PerRequest<SplashScreenPageViewModel>();
-            _container.PerRequest<MainPageViewModel>();
 
-            _container.PerRequest<TrackListPageViewModel>();
-            _container.PerRequest<LoginPageViewModel>();
-            _container.PerRequest<SettingsPageViewModel>();
+            //register all VM's
+            var allViewmodels =
+                AssemblySource.Instance.First().DefinedTypes.Where(type => type.Name.EndsWith("ViewModel")).ToList();
+
+            foreach (var vm in allViewmodels)
+            {
+                if (vm.IsAbstract) continue;
+                if (vm.Name.StartsWith("_")) continue;
+
+                //register all VM's
+                var type = vm.AsType();
+
+                Debug.WriteLine($"add {type.Name}");
+                _container.RegisterPerRequest(type, null, type);
+            }
+
+            //_container.PerRequest<SplashScreenPageViewModel>();
+            //_container.PerRequest<MainPageViewModel>();
+
+            //_container.PerRequest<TrackListPageViewModel>();
+            //_container.PerRequest<LoginPageViewModel>();
+            //_container.PerRequest<SettingsPageViewModel>();
 
             var db = _container.GetInstance<IDbTracksProvider>();
 

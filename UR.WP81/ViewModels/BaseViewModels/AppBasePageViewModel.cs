@@ -1,11 +1,9 @@
 ﻿using System;
 using Windows.ApplicationModel;
-using Windows.ApplicationModel.Appointments;
 using Windows.ApplicationModel.Email;
 using Windows.ApplicationModel.Store;
 using Windows.Graphics.Display;
 using Windows.System;
-using Windows.System.Display;
 using Caliburn.Micro;
 using Eve.Caliburn;
 using Eve.Core.Helpers;
@@ -20,7 +18,6 @@ namespace UR.WP81.ViewModels.BaseViewModels
         protected override string StatusBarText()
         {
             return "Обробка...";
-            //return base.StatusBarText();
         }
 
         public readonly INavigationService NavigationService;
@@ -35,7 +32,6 @@ namespace UR.WP81.ViewModels.BaseViewModels
         {
             NavigationService = navigationService;
 
-            //NavigationService.BackStack.
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
         }
 
@@ -106,28 +102,19 @@ namespace UR.WP81.ViewModels.BaseViewModels
 
         public async void SendBugReportCommand()
         {
-            EmailRecipient sendTo = new EmailRecipient
+            var sendTo = new EmailRecipient
             {
-                Name = "розробник додатку",
-                Address = "bondarenkod+uaroads@windowslive.com"
+                Address = "oleksandra.ljubycka@stfalcon.com"
             };
 
-            EmailRecipient bcc = new EmailRecipient
-            {
-                Name = "stfalcon.com",
-                Address = "uaroads@stfalcon.com"
-            };
-
-            EmailMessage mail = new EmailMessage
+            var mail = new EmailMessage
             {
                 Subject = "Зворотній зв'язок UAROADS WP",
                 Body = "\r\n\r\n\r\n\r\nappver:" + Package.Current.Id.Version.GetAsString()
             };
 
             mail.To.Add(sendTo);
-            mail.Bcc.Add(bcc);
 
-            // Open the share contract with Mail only:
             await EmailManager.ShowComposeNewEmailAsync(mail);
         }
 
