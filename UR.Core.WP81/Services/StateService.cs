@@ -72,36 +72,5 @@ namespace UR.Core.WP81.Services
         {
             AppState = message.State;
         }
-
-        public bool TrySetLockScreenState(bool isEnabled)
-        {
-            if (_displayRequest == null)
-            {
-                _displayRequest = new DisplayRequest();
-            }
-
-            try
-            {
-                if (!StateService.Instance.IsEmu)
-                {
-                    if (isEnabled)
-                    {
-                        _displayRequest.RequestActive();
-                    }
-                    else
-                    {
-                        _displayRequest.RequestRelease();
-                    }
-
-                    return true;
-                }
-            }
-            catch (Exception)
-            {
-                //todo log
-            }
-
-            return false;
-        }
     }
 }

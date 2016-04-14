@@ -159,6 +159,7 @@ namespace UR.WP81
             _container.PerRequest<IDbTracksProvider, AppDatabase>();
             _container.PerRequest<ITrackDataProvider, TrackDataDataProvider>();
             _container.PerRequest<ITracksProvider, TracksProvider>();
+            _container.RegisterSingleton(typeof(ILockScreenManager), string.Empty, typeof(LockScreenManager));
 
             //_container.Singleton<TrackWriter>();
 

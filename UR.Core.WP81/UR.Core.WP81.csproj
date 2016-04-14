@@ -91,6 +91,7 @@
     <Compile Include="API\Models\ERoutePointType.cs" />
     <Compile Include="Common\AppDatabase.cs" />
     <Compile Include="Common\Haversine.cs" />
+    <Compile Include="Common\LockScreenManager.cs" />
     <Compile Include="Common\Messages.cs" />
     <Compile Include="API\Models\RoutePoint.cs" />
     <Compile Include="API\ApiResponses\LoginApiResponse.cs" />
@@ -160,8 +161,8 @@
     <SDKReference Include="Microsoft.VCLibs, version=12.0">
       <Name>Microsoft Visual C++ 2013 Runtime Package for Windows Phone</Name>
     </SDKReference>
-    <SDKReference Include="SQLite.WP81, Version=3.11.1">
-      <Name>SQLite for Windows Phone 8.1 %28SQLite.WP81, Version=3.11.1%29</Name>
+    <SDKReference Include="SQLite.WP81, Version=3.12.1">
+      <Name>SQLite for Windows Phone 8.1 %28SQLite.WP81, Version=3.12.1%29</Name>
     </SDKReference>
   </ItemGroup>
   <ItemGroup>

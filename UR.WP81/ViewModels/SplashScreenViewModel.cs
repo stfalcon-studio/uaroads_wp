@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Eve.Caliburn;
+using UR.Core.WP81.Common;
 using UR.Core.WP81.Services;
 using UR.WP81.ViewModels.BaseViewModels;
 
@@ -15,6 +16,9 @@ namespace UR.WP81.ViewModels
         protected async override void OnViewReady(object view)
         {
             base.OnViewReady(view);
+
+            //buid
+            IoC.Get<ILockScreenManager>();
 
             StateService.Instance.Init();
 

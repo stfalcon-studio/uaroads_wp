@@ -228,7 +228,7 @@ namespace UR.Core.WP81.Services
         {
             var cTrack = StateService.Instance.CurrentTrack;
 
-            cTrack.LocationPointsCount++;
+           
 
             var bgp = new BasicGeoposition()
             {
@@ -241,10 +241,11 @@ namespace UR.Core.WP81.Services
             {
                 var tmpDistance = Haversine.Distance(cTrack.LastGeoposition.Value, bgp, Haversine.DistanceType.Meters);
 
-                Debug.WriteLine($"DISTANCE:{tmpDistance}m");
+                Debug.WriteLine($"DISTANCE: {tmpDistance}m");
 
                 if (tmpDistance >= AppConstant.MINIMAL_DISTANCE_BETWEEN_GPS_POINTS_METERS)
                 {
+                    cTrack.LocationPointsCount++;
                     cTrack.TrackLength += tmpDistance;
                     cTrack.LastGeoposition = bgp;
 

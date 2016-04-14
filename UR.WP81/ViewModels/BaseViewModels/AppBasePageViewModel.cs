@@ -125,7 +125,7 @@ namespace UR.WP81.ViewModels.BaseViewModels
 
         public void Handle(MsgAppState message)
         {
-            StateService.Instance.TrySetLockScreenState(message.State != EGlobalState.Recording);
+            IoC.Get<ILockScreenManager>().TrySetLockScreenState(message.State == EGlobalState.Recording);
 
             UpdateState();
         }
