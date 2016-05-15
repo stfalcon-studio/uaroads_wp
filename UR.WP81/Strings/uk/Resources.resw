@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="MainPage_AppBtnTracksButton.Label" xml:space="preserve">
+    <value>мої треки</value>
+  </data>
+  <data name="MainPage_AppBtnMenuSettingsButton.Label" xml:space="preserve">
+    <value>інфо та налаштування</value>
+  </data>
+  <data name="MainPage_AppBtnMenuFeedback.Label" xml:space="preserve">
+    <value>зворотній зв'язок</value>
+  </data>
+  <data name="SettingsPage.Header" xml:space="preserve">
+    <value>інфо та налаштування</value>
+  </data>
+  <data name="SettingsPage_YourEmail.Text" xml:space="preserve">
+    <value>ваш email</value>
+  </data>
+  <data name="SettingsPage_DeviceId.Text" xml:space="preserve">
+    <value>id пристрою</value>
+  </data>
+  <data name="SettingsPage_DeviceName.Text" xml:space="preserve">
+    <value>назва пристрою</value>
+  </data>
+  <data name="SettingsPage_AppBtnLoginButton.Content" xml:space="preserve">
+    <value>Прив'язати пристрій</value>
+  </data>
+  <data name="SettingsPage_GoToWww.Content" xml:space="preserve">
+    <value>Перейти на сайт</value>
+  </data>
+  <data name="SettingsPage_GoToPrivacy.Content" xml:space="preserve">
+    <value>Політика конфіденційності</value>
+  </data>
+  <data name="SettingsPage_LogoutButton.Content" xml:space="preserve">
+    <value>відв'язати пристрій</value>
+  </data>
+  <data name="SettingsPage_AppBtnMenuFeedback.Content" xml:space="preserve">
+    <value>Зворотній зв'язок</value>
+  </data>
+  <data name="SettingsPage_AppVersion.Text" xml:space="preserve">
+    <value>версія додатку:</value>
+  </data>
+  <data name="TrackListPage.Header" xml:space="preserve">
+    <value>мої треки</value>
+  </data>
+  <data name="TrackListPage_AppBtnProcess.Label" xml:space="preserve">
+    <value>відправити</value>
+  </data>
+  <data name="TrackListPage__AppBtnMenuSettingsButton.Label" xml:space="preserve">
+    <value>налаштування</value>
+  </data>
+  <data name="TrackListPage_AppBtnMenuDeleteEverything.Label" xml:space="preserve">
+    <value>видалити всі треки</value>
+  </data>
+  <data name="MainPage_AppBtnLoginButton.Label" xml:space="preserve">
+    <value>прив'язати</value>
+  </data>
+  <data name="MainPage_RecordingStop.Content" xml:space="preserve">
+    <value>ЗУПИНИТИ ЗАПИС</value>
+  </data>
+  <data name="MainPage_RecordingStart.Content" xml:space="preserve">
+    <value>ПОЧАТИ ЗАПИС</value>
+  </data>
+  <data name="MainPage_YouHaveUnfinishedTrack.Text" xml:space="preserve">
+    <value>у вас є незавершенний трек</value>
+  </data>
+  <data name="LocConverter_Recording" xml:space="preserve">
+    <value>Йде запис</value>
+  </data>
+  <data name="LocConverter_Recorded" xml:space="preserve">
+    <value>Записано</value>
+  </data>
+  <data name="LocConverter_RecordPaused" xml:space="preserve">
+    <value>Запис призупинено</value>
+  </data>
+  <data name="LocConverter_Processed" xml:space="preserve">
+    <value>Опрацьовано</value>
+  </data>
+  <data name="LocConverter_Processing" xml:space="preserve">
+    <value>Обробка</value>
+  </data>
+  <data name="LocConverter_Sending" xml:space="preserve">
+    <value>Відправка</value>
+  </data>
+  <data name="LocConverter_Sent" xml:space="preserve">
+    <value>Відправлено</value>
+  </data>
+  <data name="LocConverter_Error" xml:space="preserve">
+    <value>Помилка</value>
+  </data>
+  <data name="TrackListPage_AppBtnMenuFeedback.Label" xml:space="preserve">
+    <value>зворотній зв'язок</value>
+  </data>
+  <data name="Global_AppName" xml:space="preserve">
+    <value>Дороги України</value>
+  </data>
+  <data name="AppBasePageViewModel_StatusBarText" xml:space="preserve">
+    <value>Обробка...</value>
+  </data>
+  <data name="SendBugReportCommand_Header" xml:space="preserve">
+    <value>Зворотній зв'язок UAROADS WP</value>
+  </data>
+  <data name="LoginPageViewModel_LoginError" xml:space="preserve">
+    <value>навдалий запит, спробуйте потім ще раз</value>
+  </data>
+  <data name="LoginPageViewModel_EmailFormatError" xml:space="preserve">
+    <value>перевірте формат email'у</value>
+  </data>
+  <data name="LoginPage.Header" xml:space="preserve">
+    <value>додавання пристрою</value>
+  </data>
+  <data name="LoginPage_Email.PlaceholderText" xml:space="preserve">
+    <value>ваш email</value>
+  </data>
+  <data name="LoginPage_DeviceName.PlaceholderText" xml:space="preserve">
+    <value>назва пристрою</value>
+  </data>
+  <data name="LoginPage_BindDevice.Content" xml:space="preserve">
+    <value>прив'язати</value>
+  </data>
+  <data name="AppHeader.Text" xml:space="preserve">
+    <value>Дороги України</value>
+  </data>
+  <data name="TrackListPage_BuildMenu_ResendTrack" xml:space="preserve">
+    <value>Скинути стан та завантажити</value>
+  </data>
+  <data name="SettingsPageViewModel_DefaultLanguage" xml:space="preserve">
+    <value>За замовчуванням</value>
+  </data>
+</root>

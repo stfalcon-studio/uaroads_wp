@@ -18,47 +18,64 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <controls:AppHeader Header="інфо та налаштування" />
+        <controls:AppHeader x:Uid="SettingsPage"
+                            Header="інфо та налаштування" />
 
         <Grid Grid.Row="1"
               Margin="19 20 19 0">
             <StackPanel Visibility="{Binding CanLogout, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock FontSize="14"
                            Opacity="0.7"
+                           x:Uid="SettingsPage_YourEmail"
                            Text="ваш email" />
                 <TextBlock FontSize="18"
                            Text="{Binding UserLogin}" />
                 <TextBlock FontSize="14"
                            Opacity="0.7"
+                           x:Uid="SettingsPage_DeviceId"
                            Text="id пристрою" />
                 <TextBlock FontSize="18"
                            Text="{Binding DeviceId}" />
                 <TextBlock FontSize="14"
                            Opacity="0.7"
+                           x:Uid="SettingsPage_DeviceName"
                            Text="назва пристрою" />
                 <TextBlock FontSize="18"
                            Text="{Binding DeviceName}" />
             </StackPanel>
 
+         
+
+
             <HyperlinkButton x:Name="AppBtnLoginButton"
                              VerticalAlignment="Top"
+                             x:Uid="SettingsPage_AppBtnLoginButton"
                              Content="Прив'язати пристрій"
                              Visibility="{Binding CanLogout,
                                          Converter={StaticResource BooleanToOppositeVisibilityConverter}}" />
 
-
-
             <StackPanel Margin="0 0 0 40"
                         VerticalAlignment="Bottom">
 
-                <HyperlinkButton Content="Перейти на сайт"
+                <TextBlock FontSize="14"
+                           Text="Мова додатка" />
+
+                <ComboBox ItemsSource="{Binding Languages}"
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="Code"
+                          SelectedValue="{Binding SelectedLanguageCode, Mode=TwoWay}" />
+
+                <HyperlinkButton x:Uid="SettingsPage_GoToWww"
+                                 Content="Перейти на сайт"
                                  x:Name="GoToWww" />
 
-                <HyperlinkButton Content="Політика конфіденційності"
+                <HyperlinkButton x:Uid="SettingsPage_GoToPrivacy"
+                                 Content="Політика конфіденційності"
                                  x:Name="GoToPrivacy"
                                  Margin="0 12 0 0" />
 
-                <HyperlinkButton Content="відв'язати пристрій"
+                <HyperlinkButton x:Uid="SettingsPage_LogoutButton"
+                                 Content="відв'язати пристрій"
                                  Margin="0 12 0 0"
                                  x:Name="LogoutButton"
                                  Visibility="{Binding CanLogout,
@@ -66,12 +83,14 @@
 
                 <HyperlinkButton x:Name="AppBtnMenuFeedback"
                                  Margin="0 12 0 0"
+                                 x:Uid="SettingsPage_AppBtnMenuFeedback"
                                  Content="Зворотній зв'язок" />
 
                 <TextBlock HorizontalAlignment="Right"
                            Margin="0 12 0 0"
                            FontSize="14">
-                    <Run Text="версія додатку:" />
+                    <Run x:Uid="SettingsPage_AppVersion"
+                         Text="версія додатку:" />
                     <Run Text="{Binding AppVersion}" />
                 </TextBlock>
             </StackPanel>

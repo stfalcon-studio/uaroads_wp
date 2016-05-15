@@ -82,7 +82,7 @@ namespace UR.Core.WP81.API
         {
             if (response.ErrorCode == "NETWORK_ERROR")
             {
-                _messageBoxList.Add("Нет подключения к сети, попробуйте позже");
+                _messageBoxList.Add(Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("UR.Core.WP81/Resources/ApiResponseProcessor_NoNetwork").ValueAsString);
             }
             else
             {
@@ -101,7 +101,7 @@ namespace UR.Core.WP81.API
 
                 if (string.IsNullOrEmpty(errorMessage))
                 {
-                    errorMessage = "Произошла неизвестная ошибка, попробуйте позже";
+                    errorMessage = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("UR.Core.WP81/Resources/ApiResponseProcessor_SomeError").ValueAsString;
                 }
 
                 _messageBoxList.Add(errorMessage);
@@ -127,7 +127,7 @@ namespace UR.Core.WP81.API
 
                     if (string.IsNullOrEmpty(body)) continue;
 
-                    await MessageDialogExt.CreateFacade(body, "MEGOGO").WithCommand("Закрыть").ShowAsync();
+                    await MessageDialogExt.CreateFacade(body, Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("UR.Core.WP81/Resources/AppName").ValueAsString).WithCommand(Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("UR.Core.WP81/Resources/ApiResponseProcessor_Close").ValueAsString).ShowAsync();
                 }
             }
             finally

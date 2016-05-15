@@ -75,7 +75,7 @@ namespace UR.WP81.ViewModels
                 }
                 else
                 {
-                    await MessageDialogExt.ShowAsync("навдалий запит, спробуйте потім ще раз");
+                    await MessageDialogExt.ShowAsync(Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/LoginPageViewModel_LoginError").ValueAsString);
                 }
 
 
@@ -112,7 +112,7 @@ namespace UR.WP81.ViewModels
 
         private void NotOk()
         {
-            MessageDialogExt.ShowAsync("перевірте формат email'у");
+            MessageDialogExt.ShowAsync(Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/LoginPageViewModel_EmailFormatError").ValueAsString);
         }
     }
 }

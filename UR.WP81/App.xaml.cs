@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Globalization;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -48,6 +49,23 @@ namespace UR.WP81
         }
 
         private SplashScreen _argsSplashScreen;
+
+        protected override Frame CreateApplicationFrame()
+        {
+            var frame = base.CreateApplicationFrame();
+
+            //var lng = ApplicationLanguages.ManifestLanguages.ToList();
+
+            //SettingsService.OverrideLanguageCode = "en";
+
+            if (!string.IsNullOrEmpty(SettingsService.OverrideLanguageCode))
+            {
+                ApplicationLanguages.PrimaryLanguageOverride = SettingsService.OverrideLanguageCode;
+                //frame.Language = SettingsService.OverrideLanguageCode;
+            }
+
+            return frame;
+        }
 
         //private Frame CreateRootFrame()
         //{
@@ -290,14 +308,14 @@ namespace UR.WP81
             //        .ShowAsync();
             //    App.Current.Exit();
             //});
-            try
-            {
-                var t = new EasClientDeviceInformation();
-                StateService.Instance.IsEmu = t.SystemSku == "Microsoft Virtual";
-            }
-            catch (Exception)
-            {
-            }
+            //try
+            //{
+            //    var t = new EasClientDeviceInformation();
+            //    StateService.Instance.IsEmu = t.SystemSku == "Microsoft Virtual";
+            //}
+            //catch (Exception)
+            //{
+            //}
 
             // Other specific operations
             if (args.PreviousExecutionState == ApplicationExecutionState.Running)

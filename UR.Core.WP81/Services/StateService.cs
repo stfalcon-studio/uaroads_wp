@@ -44,7 +44,7 @@ namespace UR.Core.WP81.Services
 
         public EGlobalState AppState { get; set; }
 
-        public bool IsEmu { get; set; }
+        //public bool IsEmu { get; set; }
 
         public double? AccValue { get; set; }
 

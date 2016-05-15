@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Caliburn.Micro;
 using Microsoft.ApplicationInsights;
 using UR.Core.WP81.Common;
@@ -66,9 +67,25 @@ namespace UR.WP81.ViewModels
             {
                 foreach (var track in TrackList)
                 {
-                    await new TrackProcessor().ProcessAsync(track.Id);
-                    await new TrackSender().SendAsync(track.Id);
-                    new TelemetryClient().TrackEvent("TRACKSENT", new Dictionary<string, string>
+                    await UploaTrackAsync(track);
+                }
+            }
+            catch (Exception err)
+            {
+                new TelemetryClient().TrackException(err);
+            }
+            finally
+            {
+                Load();
+                IsBusyStatusBar = false;
+            }
+        }
+
+        private async Task UploaTrackAsync(ATrack track, bool resetTrackState = false)
+        {
+            await new TrackProcessor().ProcessAsync(track.Id, resetTrackState);
+            await new TrackSender().SendAsync(track.Id);
+            new TelemetryClient().TrackEvent("TRACKSENT", new Dictionary<string, string>
                     {
                         { "TrackID", track.Id.ToString("N") },
                         { "TrackLength", track.TrackLength.ToString() },
@@ -76,7 +93,23 @@ namespace UR.WP81.ViewModels
                         { "TrackPitPointsCount", track.PitPointsCount.ToString() },
                         { "TrackLocationPointsCount", track.LocationPointsCount.ToString() },
                     });
-                }
+        }
+
+        public async void ResendTrack(ATrack track)
+        {
+            if (IsBusy) return;
+
+            if (!StateService.Instance.DeviceIsRegistred)
+            {
+                NavigationService.ToLoginPage(true);
+                return;
+            }
+
+            IsBusyStatusBar = true;
+
+            try
+            {
+                await UploaTrackAsync(track);
             }
             catch (Exception err)
             {

@@ -33,6 +33,7 @@
                            Margin="0 0 0 0"
                            VerticalAlignment="Center"
                            FontSize="26"
+                           x:Uid="AppHeader"
                            Text="Дороги України" />
 
                 <TextBlock Grid.Column="2"
@@ -54,8 +55,6 @@
                            Foreground="White"
                            LineHeight="20"
                            LineStackingStrategy="BlockLineHeight" />
-
-
             </Grid>
         </Grid>
     </Grid>

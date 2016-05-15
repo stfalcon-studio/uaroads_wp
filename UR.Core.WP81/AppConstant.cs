@@ -1,7 +1,34 @@
-﻿namespace UR.Core.WP81
+﻿using System.Collections.Generic;
+
+namespace UR.Core.WP81
 {
     public static class AppConstant
     {
+        static AppConstant()
+        {
+            AppLanguages = new List<AppLanguage>();
+
+            AppLanguages.Add(new AppLanguage()
+            {
+                Name = "",
+                Code = ""
+            });
+
+            AppLanguages.Add(new AppLanguage()
+            {
+                Name = "Українська",
+                Code = "uk"
+            });
+
+            AppLanguages.Add(new AppLanguage()
+            {
+                Name = "English",
+                Code = "en"
+            });
+        }
+
+        public static List<AppLanguage> AppLanguages { get; private set; }
+
         public const uint MaxSavedTracksAtStorage = 50;
 
         public const uint SensorCacheCount = 10;
@@ -26,5 +53,20 @@
         public const string DataFolderName = "Tracks";
 
         public const string BaseApiUrl = "http://api.uaroads.com/";
+
+
+
+    }
+
+    public class AppLanguage
+    {
+        public string Name { get; set; }
+
+        public string Code { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

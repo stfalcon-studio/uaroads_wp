@@ -13,7 +13,7 @@ namespace UR.Core.WP81.Services
 {
     public class TrackProcessor
     {
-        public async Task ProcessAsync(Guid trackId)
+        public async Task ProcessAsync(Guid trackId, bool resetTrackState = false)
         {
             var tProvider = IoC.Get<ITracksProvider>();
 
@@ -22,6 +22,12 @@ namespace UR.Core.WP81.Services
                 Debug.WriteLine("begin process track {0}", trackId);
 
                 var track = await tProvider.GetTrackAsync(trackId);
+
+                if (resetTrackState)
+                {
+                    track.Status = ETrackStatus.Recorded;
+                    await tProvider.SaveTrackAsync(track);
+                }
 
                 if (track.Status != ETrackStatus.Recorded)
                 {

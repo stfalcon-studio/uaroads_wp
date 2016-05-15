@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.System.Display;
 using Caliburn.Micro;
+using Eve.Core.Helpers;
 using Microsoft.ApplicationInsights;
 using UR.Core.WP81.Services;
 
@@ -34,7 +35,7 @@ namespace UR.Core.WP81.Common
 
             try
             {
-                if (!StateService.Instance.IsEmu)
+                if (!new DeviceHelper().IsRunningOnEmulator)
                 {
                     if (@lock)
                     {

@@ -17,7 +17,7 @@ namespace UR.WP81.ViewModels.BaseViewModels
     {
         protected override string StatusBarText()
         {
-            return "Обробка...";
+            return Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/AppBasePageViewModel_StatusBarText").ValueAsString;
         }
 
         public readonly INavigationService NavigationService;
@@ -109,7 +109,7 @@ namespace UR.WP81.ViewModels.BaseViewModels
 
             var mail = new EmailMessage
             {
-                Subject = "Зворотній зв'язок UAROADS WP",
+                Subject = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/SendBugReportCommand_Header").ValueAsString,
                 Body = "\r\n\r\n\r\n\r\nappver:" + Package.Current.Id.Version.GetAsString()
             };
 

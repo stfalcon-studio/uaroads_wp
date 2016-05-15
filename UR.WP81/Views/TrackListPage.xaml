@@ -17,32 +17,43 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <controls:AppHeader Header="мої треки" />
+        <controls:AppHeader x:Uid="TrackListPage"
+                            Header="мої треки" />
 
-        <Grid Grid.Row="1" Margin="19 10 19 0">
+        <Grid Grid.Row="1"
+              Margin="19 10 19 0">
 
-            <ListView Footer="1" ItemsSource="{Binding TrackList}">
+            <ListView Footer="1"
+                      IsHoldingEnabled="True"
+                      Holding="TrackHold"
+                      ItemsSource="{Binding TrackList}">
 
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment"
+                                Value="Stretch" />
+
+                        <Setter Property="Margin"
+                                Value="0 0 0 12" />
                     </Style>
+
                 </ListView.ItemContainerStyle>
 
                 <ListView.FooterTemplate>
                     <DataTemplate>
-                        <Grid Height="50"></Grid></DataTemplate>
+                        <Grid Height="50"></Grid>
+                    </DataTemplate>
                 </ListView.FooterTemplate>
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0 0 0 12"
-                              HorizontalAlignment="Stretch"
+                        <Grid HorizontalAlignment="Stretch"
                               Background="#20FFffff">
 
-                            <StackPanel Margin="0 3 3 3">
+                            <StackPanel Margin="5 0 3 3">
 
-                                <TextBlock FontSize="24" Text="{Binding StartedDateTime}" />
+                                <TextBlock FontSize="24"
+                                           Text="{Binding StartedDateTime}" />
                                 <!--<TextBlock Text="{Binding TrackId}" />-->
                                 <StackPanel Orientation="Horizontal">
 
@@ -77,7 +88,8 @@
 
 
     <Page.BottomAppBar>
-        <CommandBar ClosedDisplayMode="Compact" IsSticky="False">
+        <CommandBar ClosedDisplayMode="Compact"
+                    IsSticky="False">
 
             <CommandBar.PrimaryCommands>
 
@@ -85,6 +97,7 @@
                               IsCompact="False"
                               IsEnabled="{Binding IsBusy,
                                                   Converter={StaticResource CBoolNotBool}}"
+                              x:Uid="TrackListPage_AppBtnProcess"
                               Label="відправити">
 
                     <AppBarButton.Icon>
@@ -114,16 +127,19 @@
                 <AppBarButton x:Name="AppBtnMenuSettingsButton"
                               IsEnabled="{Binding IsBusy,
                                                   Converter={StaticResource CBoolNotBool}}"
+                              x:Uid="TrackListPage__AppBtnMenuSettingsButton"
                               Label="налаштування" />
 
                 <AppBarButton x:Name="AppBtnMenuDeleteEverything"
                               IsEnabled="{Binding IsBusy,
                                                   Converter={StaticResource CBoolNotBool}}"
+                              x:Uid="TrackListPage_AppBtnMenuDeleteEverything"
                               Label="видалити всі треки" />
 
                 <AppBarButton x:Name="AppBtnMenuFeedback"
                               IsEnabled="{Binding IsBusy,
                                                   Converter={StaticResource CBoolNotBool}}"
+                              x:Uid="TrackListPage_AppBtnMenuFeedback"
                               Label="зворотній зв'язок" />
             </CommandBar.SecondaryCommands>
 

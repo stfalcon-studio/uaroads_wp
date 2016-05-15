@@ -15,21 +15,21 @@ namespace UR.WP81.Common
                 switch (tStatus)
                 {
                     case ETrackStatus.Recording:
-                        return "Йде запис";
+                        return Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/LocConverter_Recording").ValueAsString;
                     case ETrackStatus.Recorded:
-                        return "Записано";
+                        return Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/LocConverter_Recorded").ValueAsString;
                     case ETrackStatus.RecordPaused:
-                        return "Запис призупинено";
+                        return Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/LocConverter_RecordPaused").ValueAsString;
                     case ETrackStatus.Processed:
-                        return "Опрацьовано";
+                        return Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/LocConverter_Processed").ValueAsString;
                     case ETrackStatus.Processing:
-                        return "Обробка";
+                        return Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/LocConverter_Processing").ValueAsString;
                     case ETrackStatus.Sending:
-                        return "Відправка";
+                        return Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/LocConverter_Sending").ValueAsString;
                     case ETrackStatus.Sent:
-                        return "Відправлено";
+                        return Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/LocConverter_Sent").ValueAsString;
                     case ETrackStatus.Error:
-                        return "Помилка";
+                        return Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("Resources/LocConverter_Error").ValueAsString;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

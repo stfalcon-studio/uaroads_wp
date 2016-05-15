@@ -15,24 +15,24 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <controls:AppHeader Header="додавання пристрою" />
+        <controls:AppHeader x:Uid="LoginPage" Header="додавання пристрою" />
 
         <StackPanel Grid.Row="1" Margin="19 0 19 0">
             <TextBox BorderThickness="1"
                      InputScope="EmailSmtpAddress"
-                     PlaceholderText="ваш email"
+                     x:Uid="LoginPage_Email" PlaceholderText="ваш email"
                      Text="{Binding Login,
                                     Mode=TwoWay}" />
 
             <TextBox BorderThickness="1"
-                     PlaceholderText="назва пристрою"
+                     x:Uid="LoginPage_DeviceName" PlaceholderText="назва пристрою"
                      Text="{Binding DeviceName,
                                     Mode=TwoWay}" />
 
             <Button x:Name="LoginButton"
                     HorizontalAlignment="Stretch"
                     BorderThickness="1"
-                    Content="прив'язати" />
+                    x:Uid="LoginPage_BindDevice" Content="прив'язати" />
         </StackPanel>
     </Grid>
 </Page>

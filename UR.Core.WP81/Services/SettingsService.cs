@@ -41,6 +41,11 @@ namespace UR.Core.WP81.Services
             get { return _localSettings.GetSetting("UaRoads.DeviceName", String.Empty); }
             set { _localSettings.SetSetting("UaRoads.DeviceName", value); }
         }
+        public static string OverrideLanguageCode
+        {
+            get { return _localSettings.GetSetting("UaRoads.OverrideLanguageCode", String.Empty); }
+            set { _localSettings.SetSetting("UaRoads.OverrideLanguageCode", value); }
+        }
 
         //public static AUser User
         //{
