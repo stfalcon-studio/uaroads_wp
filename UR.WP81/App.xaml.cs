@@ -18,6 +18,7 @@ using UR.Core.WP81.API;
 using UR.Core.WP81.Services;
 using UR.WP81.Views;
 using Microsoft.ApplicationInsights;
+using UR.Core.WP81;
 using UR.Core.WP81.Common;
 using UR.Core.WP81.Models;
 

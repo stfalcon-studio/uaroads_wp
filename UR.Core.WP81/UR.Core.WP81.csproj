@@ -96,7 +96,7 @@
     <Compile Include="API\Models\RoutePoint.cs" />
     <Compile Include="API\ApiResponses\LoginApiResponse.cs" />
     <Compile Include="API\RequestParametersContainer.cs" />
-    <Compile Include="AppConstant.cs" />
+    <Compile Include="Common\AppConstant.cs" />
     <Compile Include="Common\EGlobalState.cs" />
     <Compile Include="Common\ETrackStatus.cs" />
     <Compile Include="Models\DataAccelerometer.cs" />
@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <PRIResource Include="Strings\ru\Resources.resw" />
     <PRIResource Include="Strings\uk\Resources.resw" />
     <PRIResource Include="Strings\en\Resources.resw" />
   </ItemGroup>

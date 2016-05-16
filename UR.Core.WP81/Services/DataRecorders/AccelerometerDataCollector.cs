@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using Windows.Devices.Sensors;
+using UR.Core.WP81.Common;
 
 namespace UR.Core.WP81.Services.DataRecorders
 {

@@ -58,7 +58,7 @@
                         VerticalAlignment="Bottom">
 
                 <TextBlock FontSize="14"
-                           Text="Мова додатка" />
+                           x:Uid="SettingsPage_AppLanguage" Text="Мова додатка" />
 
                 <ComboBox ItemsSource="{Binding Languages}"
                           DisplayMemberPath="Name"

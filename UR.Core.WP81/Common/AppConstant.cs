@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UR.Core.WP81
+namespace UR.Core.WP81.Common
 {
     public static class AppConstant
     {
@@ -16,15 +16,22 @@ namespace UR.Core.WP81
 
             AppLanguages.Add(new AppLanguage()
             {
-                Name = "Українська",
-                Code = "uk"
+                Name = "English",
+                Code = "en"
             });
 
             AppLanguages.Add(new AppLanguage()
             {
-                Name = "English",
-                Code = "en"
+                Name = "Русский",
+                Code = "ru"
             });
+
+            AppLanguages.Add(new AppLanguage()
+            {
+                Name = "Українська",
+                Code = "uk"
+            });
+
         }
 
         public static List<AppLanguage> AppLanguages { get; private set; }

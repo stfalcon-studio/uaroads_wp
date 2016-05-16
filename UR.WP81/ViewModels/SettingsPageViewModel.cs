@@ -6,6 +6,7 @@ using Windows.System;
 using Caliburn.Micro;
 using Eve.Caliburn;
 using UR.Core.WP81;
+using UR.Core.WP81.Common;
 using UR.Core.WP81.Services;
 using UR.WP81.Common;
 using UR.WP81.ViewModels.BaseViewModels;

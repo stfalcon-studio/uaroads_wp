@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Windows.Devices.Geolocation;
+using UR.Core.WP81.Common;
 
 namespace UR.Core.WP81.Services.DataRecorders
 {

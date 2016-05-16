@@ -9,6 +9,6 @@
       mc:Ignorable="d">
 
     <Grid>
-        <WebView Source="ms-appx-web:///Assets/Privacy.html" />
+        <WebView Source="ms-appx-web:///Strings/Privacy.html" />
     </Grid>
 </Page>

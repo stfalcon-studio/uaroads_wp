@@ -165,4 +165,7 @@
   <data name="SettingsPageViewModel_DefaultLanguage" xml:space="preserve">
     <value>За замовчуванням</value>
   </data>
+  <data name="SettingsPage_AppLanguage.Text" xml:space="preserve">
+    <value>Мова додатка</value>
+  </data>
 </root>

@@ -40,15 +40,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ApiResponseProcessor_SomeError" xml:space="preserve">
-    <value>Произошла неизвестная ошибка, попробуйте позже</value>
+    <value>Трапилась якась помилка, будь ласка, спробуйте пізніше</value>
   </data>
   <data name="ApiResponseProcessor_Close" xml:space="preserve">
-    <value>Закрыть</value>
+    <value>Закрити</value>
   </data>
   <data name="AppName" xml:space="preserve">
-    <value>APP_NAME</value>
+    <value>Дороги України</value>
   </data>
   <data name="ApiResponseProcessor_NoNetwork" xml:space="preserve">
-    <value>Нет подключения к сети, попробуйте позже</value>
+    <value>Нема підключення до мережі</value>
   </data>
 </root>
